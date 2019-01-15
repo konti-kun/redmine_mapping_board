@@ -6,6 +6,8 @@ Redmine::Plugin.register :ticket_mapping do
   url 'https://github.com/konti-kuni'
   author_url 'https://github.com/konti-kun'
 
-  permission :maps, {:maps => [:index]}, :public => true
+  project_module :maps do
+    permission :view_maps, :maps => :index
+  end
   menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => 'Maps', :after => :activity, :param => :project_id
 end
