@@ -1,4 +1,7 @@
 <h2>MapsController#index</h2>
 <div class="svg_panel"></div>
+<script>
+  datas = <%= raw @items.to_json %>
+</script>
 <%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "ticket_mapping" %>
