@@ -2,3 +2,4 @@
 # See: http://guides.rubyonrails.org/routing.html
 
 get 'maps', :to => 'maps#index'
+post 'uploadfile', :to => 'maps#uploadfile'
