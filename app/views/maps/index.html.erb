@@ -1,7 +1,26 @@
 <h2>MapsController#index</h2>
+<input type="file" name="file_1"></input>
+<%= csrf_meta_tags %>
 <div class="svg_panel"></div>
+<%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
+<script src="https://d3js.org/d3-collection.v1.min.js"></script>
+<script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
+<script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+<script src="https://d3js.org/d3-request.v1.min.js"></script>
 <script>
+  d3.select("input[type=file]").on("change",function(){
+    var file = this.files[0];
+    var formdata = new FormData();
+    formdata.append("uploadfile", file);
+    var token = $('meta[name="csrf-token"]').attr('content');
+    d3.request("uploadfile")
+    .header('X-CSRF-Token', token)
+		  .post(formdata,function(data){
+      console.log(data);
+		  })
+    
+
+  });
   datas = <%= raw @items.to_json %>
 </script>
-<%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "ticket_mapping" %>
