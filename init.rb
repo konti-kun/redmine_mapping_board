@@ -1,4 +1,4 @@
-Redmine::Plugin.register :ticket_mapping do
+Redmine::Plugin.register :redmine_ticket_mapping do
   name 'Ticket Mapping plugin'
   author 'konti-kun'
   description 'This is a plugin for Redmine'
