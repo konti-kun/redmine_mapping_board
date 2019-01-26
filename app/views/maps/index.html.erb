@@ -1,12 +1,20 @@
 <h2>MapsController#index</h2>
 <input type="file" name="file_1"></input>
 <%= csrf_meta_tags %>
-<div class="svg_panel"></div>
+<div class="svg_panel">
+<svg width="1000" height="600">
+<filter id="drop-shadow">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="3"></feGaussianBlur>
+  <feOffset in="blur" result="offsetBlur" dx="2" dy="2"/>
+</filter>
+</svg>
+</div>
 <%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
 <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
 <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
 <script src="https://d3js.org/d3-request.v1.min.js"></script>
+<%= javascript_include_tag src ="drawmap.js", :plugin => "redmine_ticket_mapping" %>
 <script>
   d3.select("input[type=file]").on("change",function(){
     var file = this.files[0];
@@ -15,12 +23,12 @@
     var token = $('meta[name="csrf-token"]').attr('content');
     d3.request("uploadfile")
     .header('X-CSRF-Token', token)
-		  .post(formdata,function(data){
+    .post(formdata,function(data){
       console.log(data);
-		  })
-    
-
+    })
   });
-  datas = <%= raw @items.to_json %>
+  var datas = <%= raw @items.to_json %>
+  var svg = d3.select(".svg_panel").select("svg");
+  update_notes(datas, svg);
+  
 </script>
-<%= javascript_include_tag src ="drawmap.js", :plugin => "ticket_mapping" %>
