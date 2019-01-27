@@ -1,4 +1,5 @@
-<h2>MapsController#index</h2>
+<h2>Mapping Board</h2>
+<p><%= link_to "QR code pdf", pdf_path %></p>
 <input type="file" name="file_1"></input>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
@@ -24,7 +25,8 @@
     d3.request("uploadfile")
     .header('X-CSRF-Token', token)
     .post(formdata,function(data){
-      console.log(data);
+      var svg = d3.select(".svg_panel").select("svg");
+      update_notes(JSON.parse(data.response),svg);
     })
   });
   var datas = <%= raw @items.to_json %>

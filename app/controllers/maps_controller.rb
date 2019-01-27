@@ -6,7 +6,7 @@ class MapsController < ApplicationController
   before_filter :find_project, :authorize, :only => :index
 
   def index
-    @items = Position.all
+    @items = Position.all.order(:number)
 
     respond_to do |format|
       format.html
@@ -16,14 +16,17 @@ class MapsController < ApplicationController
 
   def uploadfile
     uploaded_file = fileupload_param.tempfile
-    output_path = Rails.root.join('public', fileupload_param.original_filename)
     image = ZBar::Image.from_jpeg(uploaded_file.read)
     puts image.width, image.height
-    qrs = image.process
-    qrs.each do |qr|
-	    print qr.location, qr.data
+    qrs = image.process({symbology: 'qrcode'})
+    qrs.each_with_index do |qr,i|
+      pos = Position.find_or_initialize_by(number: qr.data.to_i)
+      x = (qr.location[0][0] * ( 1000.0/image.width)).floor
+      y = (qr.location[0][1] * ( 600.0/image.height)).floor
+      pos.update_attributes(x: x, y: y)
     end
-    render json: {status: 200,data: @items}
+    @items = Position.all.order(:number)
+    render json: @items
   end
 
   private

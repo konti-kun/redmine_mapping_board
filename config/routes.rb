@@ -3,3 +3,4 @@
 
 get 'maps', :to => 'maps#index'
 post 'uploadfile', :to => 'maps#uploadfile'
+get 'pdf', to: 'qrcodes#index'

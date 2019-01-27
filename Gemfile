@@ -1,1 +1,5 @@
-gem "zbar"
+gem 'zbar'
+gem 'prawn'
+gem 'prawn-table'
+gem 'rqrcode'
+gem 'rqrcode_png'
