@@ -22,5 +22,16 @@ function update_notes(data,svg){
   .transition()
   .duration(750)
   .attr("transform",function(d){return "translate(" + d.x + "," + d.y + ")"})
+  .on("end",function(){
+    d3.select(".range").select("image")
+    .transition()
+    .ease(d3.easePoly)
+    .duration(300)
+    .attr("opacity",0)
+    .on("end",function(){
+      d3.select(".range").select("image").remove();
+    });
+  });
+  
 }
 

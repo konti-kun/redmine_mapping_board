@@ -1,6 +1,5 @@
 <h2>Mapping Board</h2>
 <p><%= link_to "QR code pdf", pdf_path %></p>
-<input type="file" name="file_1"></input>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg width="1000" height="600">
@@ -17,20 +16,78 @@
 <script src="https://d3js.org/d3-request.v1.min.js"></script>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "redmine_ticket_mapping" %>
 <script>
-  d3.select("input[type=file]").on("change",function(){
-    var file = this.files[0];
-    var formdata = new FormData();
-    formdata.append("uploadfile", file);
-    var token = $('meta[name="csrf-token"]').attr('content');
-    d3.request("uploadfile")
-    .header('X-CSRF-Token', token)
-    .post(formdata,function(data){
-      var svg = d3.select(".svg_panel").select("svg");
-      update_notes(JSON.parse(data.response),svg);
-    })
-  });
-  var datas = <%= raw @items.to_json %>
-  var svg = d3.select(".svg_panel").select("svg");
-  update_notes(datas, svg);
-  
+var formdata = new FormData();
+var svg = d3.select("svg")
+svg.append("g").attr("class", "ground");
+var notes = svg.append("g").attr("class", "notes");
+svg.append("g").attr("class", "selector")
+svg.append("g").attr("class", "range")
+d3.select(".selector").append("rect").attr("x", 0).attr("y", 0)
+.attr("width", svg.attr("width")).attr("height", svg.attr("height"))
+.attr("fill", "white")
+.attr("fill-opacity",0)
+.call(d3.drag()
+  .on("start",dragstarted)
+  .on("drag", dragged)
+);
+function dragstarted(){
+  d3.select(".range").select("rect").remove();
+  d3.select(".range").append("rect").attr("stroke", "red").attr("fill","gray").attr("fill-opacity", 0.3)
+  .attr("x", d3.event.x).attr("y", d3.event.y)
+  .attr("width", 0).attr("height", 0)
+  .on("dragover", function(e){
+    d3.event.stopPropagation();
+    d3.event.preventDefault();
+  }).on("drop", dropped)
+}
+function dragged(){
+  var start_x = Number(d3.select(".range").select("rect").attr("x"));
+  var start_y = Number(d3.select(".range").select("rect").attr("y"));
+  d3.select(".range").select("rect")
+  .attr("width", d3.max([0,d3.event.sourceEvent.offsetX - start_x]))
+  .attr("height",d3.max([0,d3.event.sourceEvent.offsetY - start_y]))
+}
+function dropped(){
+  d3.event.stopPropagation();
+  d3.event.preventDefault();
+  var file = d3.event.dataTransfer.files[0];
+  if(!file.type.match(/^image/)) {
+    alert('plese select a jpeg file!');
+    return;
+  }
+  formdata = new FormData();
+  formdata.append("uploadfile", file);
+  var range_selector = d3.select(".range").select("rect");
+  var rect = {
+    'x': range_selector.attr("x"),
+    'y': range_selector.attr("y"),
+    'width': range_selector.attr("width"),
+    'height': range_selector.attr("height")
+  };
+  formdata.append("rect", JSON.stringify(rect));
+  var reader = new FileReader();
+  reader.onload = function(e){
+    d3.select(".range").append("image")
+    .attr("xlink:href", e.target.result)
+    .attr("preserveAspectRatio","none")
+    .attr("opacity",0.5)
+    .attr("x", rect["x"])
+    .attr("y", rect["y"])
+    .attr("width", rect["width"])
+    .attr("height", rect["height"])
+    .on("dblclick",dblclicked);
+  };
+  reader.readAsDataURL(file);
+};
+function dblclicked(){
+  var token = d3.select('meta[name="csrf-token"]').attr('content');
+  d3.request("uploadfile")
+  .header('X-CSRF-Token', token)
+  .post(formdata,function(data){
+    var notes = d3.select(".svg_panel").select(".notes");
+    update_notes(JSON.parse(data.response),notes);
+  })
+}
+var datas = <%= raw @items.to_json %>
+update_notes(datas, notes);
 </script>
