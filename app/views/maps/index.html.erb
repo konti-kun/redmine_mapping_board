@@ -1,5 +1,4 @@
 <h2>Mapping Board</h2>
-<p><%= link_to "QR code pdf", pdf_path %></p>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg width="1000" height="600">
@@ -9,6 +8,18 @@
 </filter>
 </svg>
 </div>
+<% content_for :sidebar do %>
+  <h3>Support files</h3>
+  <p><%= link_to "QR code pdf", pdf_path, download: 'qrcodes.pdf' %></p>
+  <h3>Mode select</h3>
+  <ul> 
+    <li><a href="" class="normal selected">normal mode</a></li>
+    <li><a href="" class="image_mapping">image mapping mode</a></li>
+  </ul>
+<% end %>
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'jstoolbar' %>
+<% end %>
 <%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
 <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
@@ -16,20 +27,39 @@
 <script src="https://d3js.org/d3-request.v1.min.js"></script>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "redmine_ticket_mapping" %>
 <script>
+var params = {
+  "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
+  "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>"
+}
 var formdata = new FormData();
 var svg = d3.select("svg")
 svg.append("g").attr("class", "ground");
 var notes = svg.append("g").attr("class", "notes");
 svg.append("g").attr("class", "selector")
 svg.append("g").attr("class", "range")
-d3.select(".selector").append("rect").attr("x", 0).attr("y", 0)
-.attr("width", svg.attr("width")).attr("height", svg.attr("height"))
-.attr("fill", "white")
-.attr("fill-opacity",0)
-.call(d3.drag()
-  .on("start",dragstarted)
-  .on("drag", dragged)
-);
+
+d3.select(".normal").on("click",function(){
+  d3.event.stopPropagation();
+  d3.event.preventDefault();
+  d3.select(".image_mapping").classed("selected", false)
+  d3.select(".normal").classed("selected", true)
+  d3.select(".selector").select("rect").remove();
+  d3.select(".range").select("rect").remove();
+});
+d3.select(".image_mapping").on("click",function(){
+  d3.select(".normal").classed("selected", false)
+  d3.select(".image_mapping").classed("selected", true)
+  d3.event.stopPropagation();
+  d3.event.preventDefault();
+  d3.select(".selector").append("rect").attr("x", 0).attr("y", 0)
+  .attr("width", svg.attr("width")).attr("height", svg.attr("height"))
+  .attr("fill", "white")
+  .attr("fill-opacity",0)
+  .call(d3.drag()
+    .on("start",dragstarted)
+    .on("drag", dragged)
+  );
+});
 function dragstarted(){
   d3.select(".range").select("rect").remove();
   d3.select(".range").append("rect").attr("stroke", "red").attr("fill","gray").attr("fill-opacity", 0.3)
@@ -85,9 +115,9 @@ function dblclicked(){
   .header('X-CSRF-Token', token)
   .post(formdata,function(data){
     var notes = d3.select(".svg_panel").select(".notes");
-    update_notes(JSON.parse(data.response),notes);
+    update_notes(JSON.parse(data.response),notes, params);
   })
 }
 var datas = <%= raw @items.to_json %>
-update_notes(datas, notes);
+update_notes(datas, notes, params);
 </script>

@@ -1,7 +1,5 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-require 'rect'
-
 class RectTest < ActiveSupport::TestCase
   
   test "rect init" do

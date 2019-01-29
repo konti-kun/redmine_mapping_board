@@ -7,6 +7,7 @@ Redmine::Plugin.register :redmine_ticket_mapping do
   author_url 'https://github.com/konti-kun'
 
   require_dependency 'qrcode_pdf'
+  require_dependency 'mapping_hooks'
 
   project_module :maps do
     permission :view_maps, :maps => :index
