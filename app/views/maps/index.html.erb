@@ -1,3 +1,6 @@
+<div class="contextual">
+  <a class="icon icon-add new-note" href="">New note</a>
+</div>
 <h2>Mapping Board</h2>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
@@ -10,7 +13,7 @@
 </div>
 <% content_for :sidebar do %>
   <h3>Support files</h3>
-  <p><%= link_to "QR code pdf", pdf_path, download: 'qrcodes.pdf' %></p>
+  <p><%= link_to "QR code pdf", maps_pdf_path, download: 'qrcodes.pdf' %></p>
   <h3>Mode select</h3>
   <ul> 
     <li><a href="" class="normal selected">normal mode</a></li>
@@ -29,15 +32,38 @@
 <script>
 var params = {
   "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
-  "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>"
+  "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
+  "update_pos" :"<%= url_for :controller => 'maps', :action => 'update_pos' %>"
 }
 var formdata = new FormData();
 var svg = d3.select("svg")
-svg.append("g").attr("class", "ground");
+svg.append("g").attr("class", "ground")
+  .append("rect").attr("opacity",-1)
+  .attr("x",0).attr("y",0)
+  .attr("width",svg.attr("width"))
+  .attr("height",svg.attr("height"));
 var notes = svg.append("g").attr("class", "notes");
 svg.append("g").attr("class", "selector")
 svg.append("g").attr("class", "range")
-
+var zoomed = function(){
+  d3.select(".notes").attr("transform", d3.event.transform);
+}
+d3.select(".ground").call(
+  d3.zoom().translateExtent(
+      [[0, 0],[100000,100000]]
+    ).scaleExtent([1/2, 12]).on("zoom",zoomed)
+);
+d3.select(".new-note").on("click", function(){
+  d3.event.stopPropagation();
+  d3.event.preventDefault();
+  var token = d3.select('meta[name="csrf-token"]').attr('content');
+  d3.request("<%= url_for :controller => 'maps', :action => 'add_note' %>")
+    .header('X-CSRF-Token', token)
+    .post(formdata, function(data){
+      var notes = d3.select(".svg_panel").select(".notes");
+      update_notes(JSON.parse(data.response), notes, params);
+    });
+});
 d3.select(".normal").on("click",function(){
   d3.event.stopPropagation();
   d3.event.preventDefault();
@@ -80,6 +106,7 @@ function dragged(){
 function dropped(){
   d3.event.stopPropagation();
   d3.event.preventDefault();
+  transform = d3.zoomTransform(d3.select(".ground").node())
   var file = d3.event.dataTransfer.files[0];
   if(!file.type.match(/^image/)) {
     alert('plese select a jpeg file!');
@@ -89,10 +116,10 @@ function dropped(){
   formdata.append("uploadfile", file);
   var range_selector = d3.select(".range").select("rect");
   var rect = {
-    'x': range_selector.attr("x"),
-    'y': range_selector.attr("y"),
-    'width': range_selector.attr("width"),
-    'height': range_selector.attr("height")
+    'x': transform.invertX(range_selector.attr("x")),
+    'y': transform.invertY(range_selector.attr("y")),
+    'width': range_selector.attr("width")/transform.k,
+    'height': range_selector.attr("height")/transform.k
   };
   formdata.append("rect", JSON.stringify(rect));
   var reader = new FileReader();
@@ -101,17 +128,19 @@ function dropped(){
     .attr("xlink:href", e.target.result)
     .attr("preserveAspectRatio","none")
     .attr("opacity",0.5)
-    .attr("x", rect["x"])
-    .attr("y", rect["y"])
-    .attr("width", rect["width"])
-    .attr("height", rect["height"])
+    .attr("x", range_selector.attr("x"))
+    .attr("y", range_selector.attr("y"))
+    .attr("width",range_selector.attr("width")) 
+    .attr("height",range_selector.attr("height")) 
     .on("dblclick",dblclicked);
   };
   reader.readAsDataURL(file);
 };
 function dblclicked(){
+  d3.event.stopPropagation();
+  d3.event.preventDefault();
   var token = d3.select('meta[name="csrf-token"]').attr('content');
-  d3.request("uploadfile")
+  d3.request("<%= url_for :controller => 'maps', :action => 'uploadfile' %>")
   .header('X-CSRF-Token', token)
   .post(formdata,function(data){
     var notes = d3.select(".svg_panel").select(".notes");

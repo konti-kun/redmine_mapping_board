@@ -12,7 +12,7 @@ module Mapping
 
         div = "<div class='splitcontent'><div class='splitcontentleft'>"
         div += "<div class='attribute'>"
-        div += "<div class='label'><span>note id</span></div>"
+        div += "<div class='label'><span>note id:</span></div>"
         div += "<div class='value'>#{note_number}</div>"
         div += "</div>"
         div += "</div></div>"
@@ -40,7 +40,7 @@ module Mapping
           note_number = ""
         end
 
-        div = "<div class='attribute'>"
+        div = "<div class='nodeid'>"
         div += "<div class='splitcontent'><div class='splitcontentleft'>"
         div += "<p><label for='issue_note_id'><span>note id</span></label>"
         div += "<input size='10' maxlength='10' type='text' name='issue_note_id' id='issue_note_id' value='#{note_number}'></input>"
@@ -52,16 +52,23 @@ module Mapping
       end
     end
     def controller_issues_edit_after_save(context={ })
-        params = context[:params]
-        issue = context[:issue]
+      controller_issues_after_save(context)
+    end
+    def controller_issues_new_after_save(context={ })
+      controller_issues_after_save(context)
+    end
 
-        note_id = params[:issue_note_id].to_i
+    private
 
-        note = Note.find_by(number: note_id)
-        print note.issue
-        note.issue = issue
-        note.save
-        print note.issue
+    def controller_issues_after_save(context={})
+      params = context[:params]
+      issue = context[:issue]
+
+      note_id = params[:issue_note_id].to_i
+
+      note = Note.find_by(number: note_id)
+      note.issue = issue
+      note.save
     end
 
   end
