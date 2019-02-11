@@ -3,10 +3,9 @@ Redmine::Plugin.register :redmine_ticket_mapping do
   author 'konti-kun'
   description 'This is a plugin for Redmine'
   version '0.0.1'
-  url 'https://github.com/konti-kuni'
+  url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
 
-  require_dependency 'qrcode_pdf'
   require_dependency 'mapping_hooks'
 
   project_module :maps do
