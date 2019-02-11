@@ -30,6 +30,13 @@ class MapsController < ApplicationController
     render json: items
   end
 
+  def del_note
+    note = Note.find_by(:number => params[:number].to_i)
+    note.delete
+    items = get_notes_json
+    render json: items
+  end
+
   def update_pos
     note = Note.find_by(:number => params[:number].to_i)
     note.x = params[:x].to_i
