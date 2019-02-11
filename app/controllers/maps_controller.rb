@@ -32,7 +32,6 @@ class MapsController < ApplicationController
 
   def update_pos
     note = Note.find_by(:number => params[:number].to_i)
-    p note
     note.x = params[:x].to_i
     note.y = params[:y].to_i
     note.save
@@ -72,6 +71,6 @@ class MapsController < ApplicationController
 
   def get_notes_json
     items = Note.eager_load(:issue).order(:number)
-    return JSON.parse(items.to_json(:include => {:issue => {:only => [:subject, :tracker_id]}}))
+    return items.as_json(:include => {:issue => {:only => [:subject, :tracker_id]}})
   end
 end

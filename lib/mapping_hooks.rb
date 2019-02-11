@@ -64,11 +64,19 @@ module Mapping
       params = context[:params]
       issue = context[:issue]
 
-      note_id = params[:issue_note_id].to_i
+      issue_note_id = params[:issue_note_id]
+      if issue_note_id != ""
+        note_id = issue_note_id.to_i
 
-      note = Note.find_by(number: note_id)
-      note.issue = issue
-      note.save
+        note = Note.find_by(number: note_id)
+        note.issue = issue
+        note.save
+      else
+        notes = Note.find_by(issue_id: issue)
+        note.issue = nil
+        note.save
+      end
+
     end
 
   end
