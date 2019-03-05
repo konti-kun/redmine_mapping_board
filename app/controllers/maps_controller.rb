@@ -2,7 +2,7 @@
 class MapsController < ApplicationController
   unloadable
 
-  before_filter :find_project, :authorize, :only => :index
+  before_action :find_project, :authorize, :only => :index
 
   def index
     @items = get_notes_json
@@ -21,10 +21,10 @@ class MapsController < ApplicationController
     SQL
 
     result = ActiveRecord::Base.connection.select_all(query)
-    if result.rows.length > 0
-      Note.create(:number => result.rows[0][0], :x => 0, :y => 0)
-    else
+    if result.rows[0][0].nil?
       Note.create(:number => 0, :x => 0, :y => 0)
+    else
+      Note.create(:number => result.rows[0][0], :x => 0, :y => 0)
     end
     items = get_notes_json
     render json: items
@@ -39,9 +39,7 @@ class MapsController < ApplicationController
 
   def update_pos
     note = Note.find_by(:number => params[:number].to_i)
-    note.x = params[:x].to_i
-    note.y = params[:y].to_i
-    note.save
+    note.update!(x: params[:x].to_i, y: params[:y].to_i)
     items = get_notes_json
     render json: items
   end
