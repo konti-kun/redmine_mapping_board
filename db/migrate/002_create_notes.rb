@@ -1,4 +1,6 @@
-class CreateNotes < ActiveRecord::Migration
+migration_class = ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration
+
+class CreateNotes < migration_class
   def change
     create_table :notes do |t|
       t.integer :number
