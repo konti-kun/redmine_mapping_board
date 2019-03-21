@@ -72,9 +72,11 @@ module Mapping
         note.issue = issue
         note.save
       else
-        notes = Note.find_by(issue_id: issue)
-        note.issue = nil
-        note.save
+        note = Note.find_by(issue_id: issue)
+        if !note.nil?
+          note.issue = nil
+          note.save
+        end
       end
 
     end

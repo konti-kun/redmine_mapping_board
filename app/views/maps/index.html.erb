@@ -1,7 +1,7 @@
 <div class="contextual">
-  <a class="icon icon-add new-note" href="">New note</a>
+  <%= link_to l(:label_new_note), maps_new_path(project_id: @project.id), :remote => true, :class => "icon icon-add" %>
 </div>
-<h2>Mapping Board</h2>
+<h2><%= l(:label_mapping_board) %></h2>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg width="1000" height="600">
