@@ -11,5 +11,5 @@ Redmine::Plugin.register :redmine_mapping_board do
   project_module :maps do
     permission :view_maps, :maps => :index
   end
-  menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => 'Mapping board', :after => :issues, :param => :project_id
+  menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
 end

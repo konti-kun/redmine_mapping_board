@@ -1,0 +1,7 @@
+<% if @error_message.nil? %>
+var datas = <%= raw @items.to_json %>
+update_notes(datas, notes, params);
+hideModal();
+<% else %>
+alert("<%= l(@error_message) %>")
+<% end %>

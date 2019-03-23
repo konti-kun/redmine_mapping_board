@@ -1,6 +1,6 @@
-<h3 class="title"><%= l(:label_new_note) %></h3>
+<h3 class="title"><%= l(:label_select_issue) %></h3>
 
-<%= form_for @note, :as => :note, :url => maps_add_note_path, :remote => true, :method => :post do |f| %>
+<%= form_for @note, :as => :note, :url => maps_add_note_path(:project_id => @project), :remote => true, :method => :post do |f| %>
   <%= render :partial => 'new_form' %>
   <p class="buttons">
     <%= submit_tag l(:button_add), :id => 'note-add-submit' %>

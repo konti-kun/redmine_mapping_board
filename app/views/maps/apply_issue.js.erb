@@ -1,0 +1,6 @@
+<% if @error %>
+alert('<%= l(:message_not_issue_id) %>');
+<% else %>
+$("#issue_subject").val("<%= @issue.subject %>");
+$("#issue_tracker_id").val("<%= @issue.tracker_id %>");
+<% end %>
