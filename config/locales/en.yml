@@ -1,3 +1,7 @@
 # English strings go here for Rails i18n
 en:
-  # my_label: "My label"
+  label_mapping_board: Mapping Board
+  label_new_note: new note
+  label_select_issue: select issue
+  message_not_issue_id: Issue id error, please set current id!
+  message_use_issue_yet: The issue has be used yet, please select another issue.
