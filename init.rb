@@ -6,8 +6,6 @@ Redmine::Plugin.register :redmine_mapping_board do
   url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
 
-  require_dependency 'mapping_hooks'
-
   project_module :maps do
     permission :view_maps, :maps => :index
   end
