@@ -2,14 +2,12 @@ Redmine::Plugin.register :redmine_mapping_board do
   name 'Mapping board plugin'
   author 'konti-kun'
   description 'This is a plugin for Redmine'
-  version '0.0.2'
+  version '0.1.0'
   url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
-
-  require_dependency 'mapping_hooks'
 
   project_module :maps do
     permission :view_maps, :maps => :index
   end
-  menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => 'Mapping board', :after => :issues, :param => :project_id
+  menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
 end

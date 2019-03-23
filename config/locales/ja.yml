@@ -1,0 +1,7 @@
+---
+ja:
+  label_mapping_board: ホワイトボード
+  label_new_note: 新しい付箋紙 
+  label_select_issue: チケットの選択
+  message_not_issue_id: チケットのIDが間違っています。正しいIDを指定してください!
+  message_use_issue_yet: 既に付箋紙に使用されています。別のIDを指定してください!

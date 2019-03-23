@@ -1,0 +1,26 @@
+<fieldset class="box">
+  <p>
+<%= l(:label_issue) %> #<%= text_field_tag :issue_id %>
+<%= button_tag l(:button_apply), :type => 'button', :class => "apply_issue" %>
+</p>
+</fieldset>
+<fieldset class="box">
+<%= labelled_fields_for :issue, @issue do |f| %>
+  <p><%= f.select :tracker_id, trackers_options_for_select(@issue), {:required => true} %></p>
+                 
+  <p><%= f.text_field :subject, :size => 40, :maxlength => 40 %></p>
+<% end %>
+</fieldset>
+<%= javascript_tag do %>
+$(document).ready(function(){
+  $("#issue_tracker_id").each(function(){
+    $(this).val($(this).find("option[selected=selected]").val());
+  });
+  $(".apply_issue").click(function(){
+    var issue_id = $("#issue_id").val();
+    var url = "<%= url_for(:controller => :maps, :action => :apply_issue) %>";
+    url = url + "?issue_id=" + issue_id;
+    $.ajax({url: url});
+  });
+});
+<% end %>
