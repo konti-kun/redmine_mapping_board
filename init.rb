@@ -6,8 +6,9 @@ Redmine::Plugin.register :redmine_mapping_board do
   url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
 
-  project_module :maps do
-    permission :view_maps, :maps => :index
+  project_module :mappingboards do
+    permission :view_mappingboards, :mappingboards => :index
+    permission :create_and_delete_notes, :mappingboards => [:add_note,:del_note]
   end
-  menu :project_menu, :maps, { :controller => 'maps', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
+  menu :project_menu, :mappingboards, { :controller => 'mappingboards', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
 end

@@ -1,9 +1,9 @@
 # Plugin's routes
 # See: http://guides.rubyonrails.org/routing.html
 
-get 'maps', :to => 'maps#index'
-get 'maps/new', :to => 'maps#new'
-get 'maps/apply_issue', :to => 'maps#apply_issue'
-post 'maps/update_pos', :to => 'maps#update_pos'
-post 'maps/add_note', :to => 'maps#add_note'
-post 'maps/del_note', :to => 'maps#del_note'
+get 'mappingboards', :to => 'mappingboards#index'
+get 'mappingboards/new', :to => 'mappingboards#new'
+get 'mappingboards/apply_issue', :to => 'mappingboards#apply_issue'
+post 'mappingboards/update_pos', :to => 'mappingboards#update_pos'
+post 'mappingboards/add_note', :to => 'mappingboards#add_note'
+post 'mappingboards/del_note', :to => 'mappingboards#del_note'

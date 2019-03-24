@@ -1,5 +1,5 @@
 
-class MapsController < ApplicationController
+class MappingboardsController < ApplicationController
   unloadable
 
   before_action :find_project, :authorize, :only => :index

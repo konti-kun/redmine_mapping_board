@@ -18,7 +18,7 @@ $(document).ready(function(){
   });
   $(".apply_issue").click(function(){
     var issue_id = $("#issue_id").val();
-    var url = "<%= url_for(:controller => :maps, :action => :apply_issue) %>";
+    var url = "<%= url_for(:controller => :mappingboards, :action => :apply_issue) %>";
     url = url + "?issue_id=" + issue_id;
     $.ajax({url: url});
   });
