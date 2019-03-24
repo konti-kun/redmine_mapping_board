@@ -61,8 +61,9 @@ function update_notes(data,svg, params){
     .attr("d","M " + note_width + " 0 m -3 -3 l 6 6 m 0 -6 l -6 6")
     .attr("fill","none").attr("stroke","black")
     .attr("cursor","pointer");
+
     del_btn.on("click", function(){
-      if(window.confirm("destory this note?")){
+      if(window.confirm(params["message_conform_del_note"])){
         var note_formdata = new FormData();
         note_formdata.append("number",d["number"]);
         var token = d3.select('meta[name="csrf-token"]').attr('content');

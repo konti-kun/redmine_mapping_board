@@ -5,3 +5,4 @@ en:
   label_select_issue: select issue
   message_not_issue_id: Issue id error, please set current id!
   message_use_issue_yet: The issue has be used yet, please select another issue.
+  message_conform_del_note: Do you delete this note?
