@@ -1,6 +1,6 @@
 <div class="contextual">
   <% if User.current.allowed_to?(:add_issues, @project, :global => true) && (@project.nil? || Issue.allowed_target_trackers(@project).any?) %>
-  <%= link_to l(:label_new_note), mappingboards_new_path(project_id: @project.id), :remote => true, :class => "icon icon-add" %>
+  <%= link_to l(:label_new_note), new_mappingboard_note_path(mappingboard_id: @mappingboard.id), :remote => true, :class => "icon icon-add" %>
   <% end %>
 </div>
 <h2><%= l(:label_mapping_board) %></h2>
@@ -26,8 +26,8 @@
 var params = {
   "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
-  "del_note" :"<%= url_for :controller => 'mappingboards', :action => 'del_note' %>",
-  "update_pos" :"<%= url_for :controller => 'mappingboards', :action => 'update_pos' %>",
+  "del_note" :"<%= url_for :controller => 'notes', :action => 'destroy', :mappingboard_id => @mappingboard.id, :id => 0 %>",
+  "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
   "message_conform_del_note" :"<%= l(:message_conform_del_note) %>"
 }
 var formdata = new FormData();
@@ -48,6 +48,12 @@ d3.select(".ground").call(
       [[0, 0],[100000,100000]]
     ).scaleExtent([1/2, 12]).on("zoom",zoomed)
 );
-var datas = <%= raw @items.to_json %>
-update_notes(datas, notes, params);
+$.ajax({
+  url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
+  method: "get",
+  dataType: "json",
+  success: function(datas){
+    update_notes(datas, d3.select(".notes"), params);
+  }
+});
 </script>

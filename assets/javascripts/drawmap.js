@@ -67,9 +67,9 @@ function update_notes(data,svg, params){
         var note_formdata = new FormData();
         note_formdata.append("number",d["number"]);
         var token = d3.select('meta[name="csrf-token"]').attr('content');
-        d3.request(params['del_note'])
+        d3.request(params['del_note'].replace("/(.*)0/","$1" + d["number"]))
         .header('X-CSRF-Token', token)
-        .post(note_formdata,function(data){
+        .send("delete",note_formdata,function(data){
           var notes = d3.select(".svg_panel").select(".notes");
           update_notes(JSON.parse(data.response),notes, params);
         })

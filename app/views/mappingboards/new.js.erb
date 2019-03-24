@@ -1,3 +1,0 @@
-$('#ajax-modal').html('<%= escape_javascript(render :partial => 'mappingboards/new_modal') %>');
-showModal('ajax-modal', '70%');
-observeAutocompleteField("issue_id","<%= auto_complete_issues_path(:project_id => @project, :scope => (Setting.cross_project_issue_relations? ? 'all' : nil)) %>");
