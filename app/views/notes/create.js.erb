@@ -2,5 +2,5 @@
 update_notes(<%= raw @items.to_json %>, d3.select(".notes"), params);
 hideModal();
 <% else %>
-alert("<%= l(@error_message) %>")
+alert("<%= @error_message %>")
 <% end %>

@@ -53,12 +53,14 @@ class NotesController < ApplicationController
         note.issue_id = issue.id
         note.save
       else
-        @error_message = :message_save_issue_fail
+        @error_message = l(:message_save_issue_fail)
       end
     else
-      @error_message = :message_use_issue_yet
+      @error_message = l(:message_use_issue_yet)
     end
     @items = get_notes_json
+  rescue ActiveRecord::RecordInvalid => e
+    @error_message = e.record.errors.full_messages[0]
   end
 
   def destroy
