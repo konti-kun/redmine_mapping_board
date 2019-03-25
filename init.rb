@@ -6,6 +6,11 @@ Redmine::Plugin.register :redmine_mapping_board do
   url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
 
+  require_dependency 'issue'
+  unless Issue.included_modules.include? IssuePatch
+    Issue.send(:include, IssuePatch)
+  end
+
   project_module :mappingboards do
     permission :view_mappingboards, :mappingboards => :index
     permission :create_and_delete_notes, :mappingboards => [:add_note,:del_note]
