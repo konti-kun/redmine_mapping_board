@@ -1,5 +1,6 @@
 # English strings go here for Rails i18n
 en:
+  permission_view_mappingboards: Display Mapping Board
   label_mapping_board: Mapping Board
   label_new_note: new note
   label_select_issue: select issue

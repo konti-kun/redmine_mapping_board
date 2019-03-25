@@ -27,6 +27,7 @@ var params = {
   "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
   "del_note" :"<%= url_for :controller => 'notes', :action => 'destroy', :mappingboard_id => @mappingboard.id, :id => 0 %>",
+  "allow_del_note": <%= User.current.allowed_to?(:add_issues, @project, :global => true) %>,
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
   "message_conform_del_note" :"<%= l(:message_conform_del_note) %>"
 }

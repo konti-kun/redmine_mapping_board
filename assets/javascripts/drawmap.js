@@ -51,40 +51,42 @@ function update_notes(data,svg, params){
         })
       })
     );
-    var del_btn = note_node.append("g")
-    .attr("class","del_btn").attr("display","none");
-    del_btn.append("circle")
-    .attr("r",7).attr("cx", note_width).attr("cy", 0)
-    .attr("fill","white").attr("stroke","black")
-    .attr("cursor","pointer");
-    del_btn.append("path")
-    .attr("d","M " + note_width + " 0 m -3 -3 l 6 6 m 0 -6 l -6 6")
-    .attr("fill","none").attr("stroke","black")
-    .attr("cursor","pointer");
+    if(params["allow_del_note"]){
+      var del_btn = note_node.append("g")
+      .attr("class","del_btn").attr("display","none");
+      del_btn.append("circle")
+      .attr("r",7).attr("cx", note_width).attr("cy", 0)
+      .attr("fill","white").attr("stroke","black")
+      .attr("cursor","pointer");
+      del_btn.append("path")
+      .attr("d","M " + note_width + " 0 m -3 -3 l 6 6 m 0 -6 l -6 6")
+      .attr("fill","none").attr("stroke","black")
+      .attr("cursor","pointer");
 
-    del_btn.on("click", function(){
-      if(window.confirm(params["message_conform_del_note"])){
-        var note_formdata = new FormData();
-        note_formdata.append("number",d["number"]);
-        var token = d3.select('meta[name="csrf-token"]').attr('content');
-        d3.request(params['del_note'].replace("/(.*)0/","$1" + d["number"]))
-        .header('X-CSRF-Token', token)
-        .send("delete",note_formdata,function(data){
-          var notes = d3.select(".svg_panel").select(".notes");
-          update_notes(JSON.parse(data.response),notes, params);
-        })
+      del_btn.on("click", function(){
+        if(window.confirm(params["message_conform_del_note"])){
+          var note_formdata = new FormData();
+          note_formdata.append("number",d["number"]);
+          var token = d3.select('meta[name="csrf-token"]').attr('content');
+          d3.request(params['del_note'].replace("/(.*)0/","$1" + d["number"]))
+          .header('X-CSRF-Token', token)
+          .send("delete",note_formdata,function(data){
+            var notes = d3.select(".svg_panel").select(".notes");
+            update_notes(JSON.parse(data.response),notes, params);
+          })
+        }
+      });
+      function make_delete_btn(d,i){
+        d3.select(this).select(".del_btn").attr("display","inline");
+
       }
-    });
-    function make_delete_btn(d,i){
-      d3.select(this).select(".del_btn").attr("display","inline");
-
+      function del_delete_btn(d,i){
+        d3.select(this).select(".del_btn").attr("display","none");
+      }
+      note_node
+      .on("mouseover", make_delete_btn)
+      .on("mouseout", del_delete_btn)
     }
-    function del_delete_btn(d,i){
-      d3.select(this).select(".del_btn").attr("display","none");
-    }
-    note_node
-    .on("mouseover", make_delete_btn)
-    .on("mouseout", del_delete_btn)
     if(d["issue_id"] == null){
       var sub_div = div.append("div").html(params['issue_new_link'])
       .style("padding-top","3px").style("padding-bottom","3px").style("float","left");

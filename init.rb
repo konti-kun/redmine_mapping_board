@@ -13,7 +13,6 @@ Redmine::Plugin.register :redmine_mapping_board do
 
   project_module :mappingboards do
     permission :view_mappingboards, :mappingboards => :index
-    permission :create_and_delete_notes, :mappingboards => [:add_note,:del_note]
   end
   menu :project_menu, :mappingboards, { :controller => 'mappingboards', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
 end
