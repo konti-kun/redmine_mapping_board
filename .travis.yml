@@ -1,0 +1,10 @@
+languauge: ruby
+rvm:
+  - 2.5.3
+before_install:
+  - sh travis/before_install.sh
+script:
+  - pwd
+  - sh travis/exec_test.sh
+
+

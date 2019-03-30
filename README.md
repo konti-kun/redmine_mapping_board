@@ -1,5 +1,7 @@
 # Redmine Mapping board
 
+[![Build Status](https://travis-ci.org/konti-kun/redmine_mapping_board.svg?branch=master)](https://travis-ci.org/konti-kun/redmine_mapping_board)
+
 This is a redmine plugin.
 You can put(add)/move/peel off issues in the board like a sticky note.
 This note has has the number as unique key in project.
