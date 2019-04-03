@@ -10,7 +10,7 @@ class MappingboardsController < ApplicationController
     if not Mappingboard.exists?(project_id: @project.id)
       Mappingboard.create(:name => "default", :project_id => @project.id)
     end
-    @mappingboard = Mappingboard.where(project_id: @project.id).first
+    @mappingboard = Mappingboard.find_by(project_id: @project.id)
   end
 
   def show
