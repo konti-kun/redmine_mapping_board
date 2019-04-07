@@ -10,6 +10,7 @@ The note has one issue and you can edit the number of the note in the issue edit
 This plugin uses D3.js and SVG.
 Therefore Internet Explore is not supported.
 
+![](https://github.com/konti-kun/redmine_mapping_board/wiki/mapping_board_sample.png)
 
 ## Installation
 
