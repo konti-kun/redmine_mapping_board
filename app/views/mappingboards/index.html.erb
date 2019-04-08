@@ -23,7 +23,7 @@
 <script src="https://d3js.org/d3-request.v1.min.js"></script>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "redmine_mapping_board" %>
 <script>
-var params = {
+const params = {
   "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
   "del_note" :"<%= url_for :controller => 'notes', :action => 'destroy', :mappingboard_id => @mappingboard.id, :id => 0 %>",
@@ -31,30 +31,33 @@ var params = {
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
   "message_conform_del_note" :"<%= l(:message_conform_del_note) %>"
 }
-var formdata = new FormData();
-var svg = d3.select("svg")
-svg.append("g").attr("class", "ground")
-  .append("rect").attr("opacity",-1)
-  .attr("x",0).attr("y",0)
-  .attr("width",svg.attr("width"))
-  .attr("height",svg.attr("height"));
-var notes = svg.append("g").attr("class", "notes");
-svg.append("g").attr("class", "selector")
-svg.append("g").attr("class", "range")
-var zoomed = function(){
-  d3.select(".notes").attr("transform", d3.event.transform);
-}
-d3.select(".ground").call(
-  d3.zoom().translateExtent(
-      [[0, 0],[100000,100000]]
-    ).scaleExtent([1/2, 12]).on("zoom",zoomed)
-);
-$.ajax({
-  url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
-  method: "get",
-  dataType: "json",
-  success: function(datas){
-    update_notes(datas, d3.select(".notes"), params);
+function main(){
+  const formdata = new FormData();
+  const svg = d3.select("svg")
+  svg.append("g").attr("class", "ground")
+    .append("rect").attr("opacity",-1)
+    .attr("x",0).attr("y",0)
+    .attr("width",svg.attr("width"))
+    .attr("height",svg.attr("height"));
+  const notes = svg.append("g").attr("class", "notes");
+  svg.append("g").attr("class", "selector")
+  svg.append("g").attr("class", "range")
+  const zoomed = function(){
+    d3.select(".notes").attr("transform", d3.event.transform);
   }
-});
+  d3.select(".ground").call(
+    d3.zoom().translateExtent(
+        [[0, 0],[100000,100000]]
+      ).scaleExtent([1/2, 12]).on("zoom",zoomed)
+  );
+  $.ajax({
+    url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
+    method: "get",
+    dataType: "json",
+    success: function(datas){
+      update_notes(datas, d3.select(".notes"));
+    }
+  });
+}
+main();
 </script>
