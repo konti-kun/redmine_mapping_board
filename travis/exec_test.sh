@@ -14,6 +14,7 @@ bundle exec rake redmine:plugins NAME=redmine_mapping_board
 
 # Initialize RSpec
 bundle exec rails g rspec:install
+sed -i -e "s#/spec/fixtures#/test/fixtures#g" spec/rails_helper.rb
 
 # Execute test by RSpec
 bundle exec rspec plugins/redmine_mapping_board/spec -c

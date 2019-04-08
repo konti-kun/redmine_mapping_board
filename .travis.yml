@@ -1,6 +1,8 @@
 languauge: ruby
 rvm:
   - 2.5.3
+addons:
+  chrome: stable
 before_install:
   - sh travis/before_install.sh
 script:
