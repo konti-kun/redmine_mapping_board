@@ -1,4 +1,5 @@
 group :development, :test do
-  gem "rspec-rails", "~> 3.5"
+  gem 'chromedriver-helper', '~> 1.1.0'
+  gem "rspec-rails", "~> 3.7"
 end
 
