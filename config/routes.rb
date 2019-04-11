@@ -10,4 +10,9 @@ resources :mappingboards, :only => [:index,:show] do
       post 'update_pos'
     end
   end
+  resources :mappingimages, :only => [:index] do
+    collection do
+      get 'get_images', defaults: { format: :json }
+    end
+  end
 end

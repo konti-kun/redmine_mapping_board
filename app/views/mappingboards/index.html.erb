@@ -6,7 +6,7 @@
 <h2><%= l(:label_mapping_board) %></h2>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
-<svg width="1000" height="600">
+<svg>
 <filter id="drop-shadow">
   <feGaussianBlur in="SourceAlpha" stdDeviation="3"></feGaussianBlur>
   <feOffset in="blur" result="offsetBlur" dx="2" dy="2"/>
@@ -22,17 +22,23 @@
 <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
 <script src="https://d3js.org/d3-request.v1.min.js"></script>
 <%= javascript_include_tag src ="drawmap.js", :plugin => "redmine_mapping_board" %>
-<%= javascript_include_tag src ="drawrect.js", :plugin => "redmine_mapping_board" %>
+<%= javascript_include_tag src ="drawimages.js", :plugin => "redmine_mapping_board" %>
 <script>
 const params = {
   "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
+  "get_images_link" : "<%= url_for :controller => 'mappingimages', :action => 'get_images', :mappingboard_id => @mappingboard.id %>",
   "del_note" :"<%= url_for :controller => 'notes', :action => 'destroy', :mappingboard_id => @mappingboard.id, :id => 0 %>",
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
   "message_conform_del_note" :"<%= l(:message_conform_del_note) %>"
 }
 function main(){
   const svg = d3.select("svg");
+  const content_node = d3.select("#content").node();
+  svg
+    .attr("width",content_node.clientWidth)
+    .attr("height",content_node.clientHeight);
+
   svg
     .append("g")
       .attr("class", "ground")
@@ -40,12 +46,15 @@ function main(){
       .attr("x",0).attr("y",0)
       .attr("width",svg.attr("width"))
       .attr("height",svg.attr("height"));
-  const notes = svg.append("g")
-    .attr("class", "notes");
+  svg
+    .append("g")
+      .attr("class", "images");
+  svg
+    .append("g")
+      .attr("class", "notes");
   const selector = svg
     .append("g")
       .attr("class", "selector");
-
 
   svg
     .append("g")
@@ -53,6 +62,8 @@ function main(){
 
   function zoomed(){
     d3.select(".notes")
+      .attr("transform", d3.event.transform);
+    d3.select(".images")
       .attr("transform", d3.event.transform);
   }
   d3.select(".ground").call(
@@ -73,18 +84,8 @@ function main(){
       .attr("fill","black")
       .attr("cursor","pointer")
       .on("click", function(d){
-        if(d3.select(this).attr("fill")=="black"){
-          d3.select(this)
-            .attr("fill","gray")
-          drawrect(selector);
-        }else{
-          d3.select(this)
-            .attr("fill","black")
-          d3.select(".selector").select("rect").remove();
-          d3.select(".range").select("rect").remove();
-        }
-      })
-  ;
+        drawimages(selector);
+      });
 
 
   $.ajax({
