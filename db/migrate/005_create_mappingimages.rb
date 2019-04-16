@@ -1,4 +1,5 @@
-class CreateMappingimages < ActiveRecord::Migration[4.2]
+migration_class = ActiveRecord::VERSION::MAJOR >= 5 ? ActiveRecord::Migration[4.2] : ActiveRecord::Migration
+class CreateMappingimages < migration_class
   def change
     create_table :mappingimages do |t|
       t.string :url

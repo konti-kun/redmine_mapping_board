@@ -4,13 +4,26 @@ class MappingimagesController < ApplicationController
   before_action :find_mappingboard
 
   def index
+    get_mappingimages_json
   end
 
   def create
-    image = Mappingimage.new(mappingimage_params)
+    image = Mappingimage.new(mappingimage_url)
+    image.mappingboard_id = @mappingboard.id
     image.save
-    images = Mappingimage.where(mappingboard_id: @mappingboard.id)
-    render json: images.as_json
+    get_mappingimages_json
+  end
+
+  def update
+    @image = Mappingimage.find(params[:id])
+    @image.update(mappingimage_params)
+    get_mappingimages_json
+  end
+
+  def destroy
+    image = Mappingimage.find(params[:id])
+    image.delete
+    get_mappingimages_json
   end
 
   def get_images
@@ -23,7 +36,16 @@ class MappingimagesController < ApplicationController
     @mappingboard = Mappingboard.find(params[:mappingboard_id])
   end
 
-  def mappingimage_params
+  def mappingimage_url
     params.require(:mappingimage).permit(:url)
+  end
+
+  def mappingimage_params
+    params.require(:mappingimage).permit(:x,:y,:width,:height)
+  end
+
+  def get_mappingimages_json
+    images = Mappingimage.where(mappingboard_id: @mappingboard.id)
+    render json: images.as_json
   end
 end
