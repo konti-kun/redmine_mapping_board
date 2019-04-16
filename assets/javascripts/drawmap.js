@@ -15,7 +15,6 @@ function create_note(d){
   const NOTE_WIDTH = 110;
   const NOTE_HEIGHT= 80;
   const DIV_STYLE = "font-size:10px;word-wrap:break-word;overflow:hidden;width:" + (NOTE_WIDTH-10) + "px;height:" + (NOTE_HEIGHT-10)+"px;";
-  const DEL_ICON = "M " + NOTE_WIDTH + " 0 m -3 -3 l 6 6 m 0 -6 l -6 6"
   const NOTE_NODE = d3.select(this);
 
   NOTE_NODE.append("rect").call(set_size, NOTE_WIDTH, NOTE_HEIGHT)
@@ -73,47 +72,15 @@ function create_note(d){
     note_formdata.append("y",d["y"]);
     request_note(params['update_pos'],note_formdata);
   }
-
   NOTE_NODE.call(
     d3.drag()
       .on("drag",notedrag)
       .on("end",notedragend)
   );
-  const DEL_BTN = NOTE_NODE
-    .append("g")
-      .attr("class","del_btn")
-      .attr("display","none");
-  DEL_BTN
-    .append("circle")
-      .attr("r",7).attr("cx", NOTE_WIDTH).attr("cy", 0)
-      .attr("fill","white").attr("stroke","black")
-      .attr("cursor","pointer");
-  DEL_BTN
-    .append("path")
-      .attr("d", DEL_ICON)
-      .attr("fill","none").attr("stroke","black")
-      .attr("cursor","pointer");
 
-  DEL_BTN
-    .on("click", function(){
-      if(window.confirm(params["message_conform_del_note"])){
-        var note_formdata = new FormData();
-        note_formdata.append("number",d["number"]);
-        request_note(params['del_note'].replace(/(.*)0/,"$1" + d["number"]),note_formdata, "delete");
-      }
-    });
-  function make_delete_btn(d,i){
-    d3.select(this).select(".del_btn")
-      .attr("display","inline");
-
-  }
-  function hide_delete_btn(d,i){
-    d3.select(this).select(".del_btn")
-      .attr("display","none");
-  }
-  NOTE_NODE
-    .on("mouseover", make_delete_btn)
-    .on("mouseout", hide_delete_btn)
+  NOTE_NODE.call(
+    create_del_btn, params["notes_link"], params["message_conform_del_note"], request_note
+  );
 }
 
 function update_notes(data, svg){

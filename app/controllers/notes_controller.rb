@@ -64,7 +64,7 @@ class NotesController < ApplicationController
   end
 
   def destroy
-    note = Note.find_by(:number => params[:number].to_i)
+    note = Note.find(params[:id])
     note.delete
     notes = get_notes_json
     render json: notes
