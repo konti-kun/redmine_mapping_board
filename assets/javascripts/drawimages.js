@@ -106,13 +106,17 @@ function request_mappingimage(link, formdata, method){
   images.enter()
   .append("g").each(set_image)
   .call(
-    create_del_btn, params['images_link'], "Do you delete it?", request_mappingimage
+    create_del_btn, params['images_link'], params["message_conform_del_image"], request_mappingimage
   )
   });
 }
 function drawimages(){
   const svg = d3.select("svg");
   d3.json(params["get_images_link"],function(data){
+    if(data.length == 0){
+      alert(params["message_conform_zero_image"]);
+      return
+    }
     const WIDTH = svg.attr("width");
     const HEIGHT = svg.attr("height");
     const PADDING = 50;

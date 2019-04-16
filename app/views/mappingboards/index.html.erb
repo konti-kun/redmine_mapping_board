@@ -2,6 +2,7 @@
   <% if User.current.allowed_to?(:add_issues, @project, :global => true) && (@project.nil? || Issue.allowed_target_trackers(@project).any?) %>
   <%= link_to l(:label_new_note), new_mappingboard_note_path(mappingboard_id: @mappingboard.id), :remote => true, :class => "icon icon-add" %>
   <% end %>
+  <a class="icon icon-add" id="new_image_btn" style="cursor:pointer;"><%= l(:label_new_image) %></a>
 </div>
 <h2><%= l(:label_mapping_board) %></h2>
 <%= csrf_meta_tags %>
@@ -32,7 +33,9 @@ const params = {
   "images_link" : "<%= url_for :controller => 'mappingimages', :action => 'create', :mappingboard_id => @mappingboard.id %>",
   "notes_link" :"<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
-  "message_conform_del_note" :"<%= l(:message_conform_del_note) %>"
+  "message_conform_del_note" :"<%= l(:message_conform_del_note) %>",
+  "message_conform_del_image" :"<%= l(:message_conform_del_image) %>",
+  "message_conform_zero_image":"<%= l(:message_conform_zero_image) %>"
 }
 function main(){
   const svg = d3.select("svg");
@@ -74,20 +77,10 @@ function main(){
       ).scaleExtent([1/2, 12]).on("zoom",zoomed)
   );
 
-  const BUTTONS = svg
-    .append("g")
-      .attr("class", "buttons");
-
-  BUTTONS
-    .append("rect")
-      .attr("rx", 2).attr("ry", 2)
-      .attr("x", 3).attr("y", 3)
-      .attr("width", 30).attr("height", 30)
-      .attr("fill","black")
-      .attr("cursor","pointer")
-      .on("click", function(d){
-        drawimages(selector);
-      });
+  d3.select("#new_image_btn")
+  .on("click", function(d){
+    drawimages(selector);
+  });
 
 
   $.ajax({
