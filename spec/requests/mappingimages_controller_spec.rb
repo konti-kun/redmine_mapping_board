@@ -55,8 +55,8 @@ describe MappingimagesController, type: :request do
       expect(image.url).to eq "/attachments/download/1/sample1.png"
       expect(image.x).to eq 0
       expect(image.y).to eq 0
-      expect(image.width).to eq 10
-      expect(image.height).to eq 10
+      expect(image.width).to eq nil
+      expect(image.height).to eq nil
     end
 
   end
