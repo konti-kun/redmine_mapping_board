@@ -1,6 +1,5 @@
 #! /bin/sh
 
-REDMINE_VERSION="4.0.2"
 PLUGIN_NAME="redmine_mapping_board"
 
 wget http://www.redmine.org/releases/redmine-${REDMINE_VERSION}.tar.gz
