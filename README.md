@@ -11,7 +11,7 @@ If you upload image files in file module of redmine, you can map images in white
 This plugin uses D3.js and SVG.
 Therefore Internet Explore is not supported.
 
-![](https://github.com/konti-kun/redmine_mapping_board/wiki/mapping_board_sample.png)
+![](https://github.com/konti-kun/redmine_mapping_board/wiki/mapping_board.png)
 
 ## Installation
 
