@@ -1,6 +1,7 @@
-require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
+require File.expand_path(File.dirname(__FILE__) + '/../rails_helper')
+spec_type = Redmine::VERSION::MAJOR >= 4 ? :system : :feature
 
-RSpec.describe 'MappingBoard', type: :system do
+RSpec.describe 'MappingBoard', type: spec_type do
   fixtures :projects, :users, :email_addresses, :roles, :members, :member_roles,
            :trackers, :projects_trackers, :enabled_modules, :issue_statuses, :issues,
            :enumerations, :custom_fields, :custom_values, :custom_fields_trackers,
@@ -40,7 +41,10 @@ RSpec.describe 'MappingBoard', type: :system do
   def set_mappingboards()
     visit '/projects/ecookbook'
     click_link 'Settings'
-    check 'project_enabled_module_names_mappingboards'
+    if Redmine::VERSION::MAJOR < 4
+      click_link 'Modules'
+    end
+    check 'Mappingboards'
     click_button 'Save'
   end
 
