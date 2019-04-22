@@ -3,10 +3,14 @@ require 'selenium/webdriver'
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec/rails_helper')
 RSpec.configure do |config|
   config.before(:suite) do
-    DatabaseCleaner.strategy = :truncation
+    if Redmine::VERSION::MAJOR < 4
+      DatabaseCleaner.strategy = :truncation
+    end
   end
   config.before(:each) do |example|
-    DatabaseCleaner.start
+    if Redmine::VERSION::MAJOR < 4
+      DatabaseCleaner.start
+    end
     if example.metadata[:type] == :system
       if example.metadata[:js]
         driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
@@ -16,7 +20,9 @@ RSpec.configure do |config|
     end
   end
   config.after(:each) do
-    DatabaseCleaner.clean
+    if Redmine::VERSION::MAJOR < 4
+      DatabaseCleaner.clean
+    end
   end
   config.include FactoryBot::Syntax::Methods
   FactoryBot.definition_file_paths = [File.expand_path('../factories', __FILE__)]
