@@ -2,9 +2,7 @@ function set_size(selector, width, height){
   return selector.attr("width", width).attr("height", height);
 }
 function request_note(url, formdata, method="post"){
-  const token = d3.select('meta[name="csrf-token"]').attr('content');
   d3.request(url)
-  .header('X-CSRF-Token', token)
   .send(method,formdata,function(data){
     const notes = d3.select(".svg_panel").select(".notes");
     update_notes(JSON.parse(data.response),notes);
@@ -22,6 +20,7 @@ function create_note(d){
 
   const NOTE_COLOR = d3.schemePastel1[d["issue"]["tracker_id"] % 10];
   NOTE_NODE
+    .attr("cursor", "move")
     .append("rect")
       .call(set_size, NOTE_WIDTH, NOTE_HEIGHT)
       .attr("stroke","black").attr("fill",NOTE_COLOR);

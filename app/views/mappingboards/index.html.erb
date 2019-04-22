@@ -8,6 +8,12 @@
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg>
+<defs>
+  <g id="refresh_symbol">
+  <path d="M 268 193 L 387 247 L 440 126 L 392 145 A 200 200 0 1 0 377 322 L 306 288 A 120 120 0 1 1 314 173 Z"></path>
+  <circle cx=200 cy=200 r=200 fill-opacity=0></circle>
+  </g>
+</defs>
 <filter id="drop-shadow">
   <feGaussianBlur in="SourceAlpha" stdDeviation="3"></feGaussianBlur>
   <feOffset in="blur" result="offsetBlur" dx="2" dy="2"/>
@@ -64,6 +70,30 @@ function main(){
   svg
     .append("g")
     .attr("class", "range");
+
+  d3.select("#content")
+    .append("div")
+      .style("position","absolute")
+      .style("top", "150px")
+      .style("right", "5px")
+    .append("svg")
+      .attr("width", 30)
+      .attr("height", 30)
+    .append("use")
+      .attr("transform", "scale(0.06)")
+      .attr("xlink:href","#refresh_symbol")
+      .attr("cursor","pointer")
+      .attr("fill", "black")
+      .on("click",function(){
+        $.ajax({
+          url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
+          method: "get",
+          dataType: "json",
+          success: function(datas){
+            update_notes(datas, d3.select(".notes"));
+          }
+        });
+      });
 
   function zoomed(){
     d3.select(".notes")
