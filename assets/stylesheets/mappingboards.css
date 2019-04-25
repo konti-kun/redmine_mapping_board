@@ -1,0 +1,61 @@
+.board-tab {
+  border-bottom: 1px solid #ddd;
+  padding-left: 0;
+  margin-bottom: 0;
+  list-style: none;
+}
+.board-tab::before {
+  display: table;
+  box-size: border-box;
+  content: " ";
+}
+.mappingboard-content {
+  margin-top: -10px;
+}
+.mappingboard-content::after,.board-tab::after {
+  clear: both;
+  display: table;
+  content: " ";
+  box-sizing: border-box;
+}
+.board-tab > li {
+  float: left;
+  margin-bottom: -1px;
+  position: relative;
+  display: block;
+
+}
+.board-tab > li > a {
+  margin-right: 2px;
+  font-size: 120%;
+  line-height: 1.5;
+  border: 1px solid transparent;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  display: block;
+  padding: 10px; 15px;
+  text-decoration: none;
+}
+.board-tab > li > a:hover, .board-tabi > li > a:focus {
+  text-decoration: none;
+  color: #169;
+  cursor: pointer;
+  background-color: #ddd;
+}
+
+.board-tab > li.active > a, .board-tab > li.active > a:hover, .board-tab > li.active > a:focus {
+  color: #444;
+  cursor: default;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-bottom-color: transparent;
+}
+
+.add-board {
+  cursor: pointer;
+}
+
+.svg_panel {
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+}

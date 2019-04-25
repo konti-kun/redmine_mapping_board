@@ -92,9 +92,14 @@ function set_image(d,i){
       .attr("stroke", "black").attr("stroke-opacity",0).attr("stroke-width",3)
       .attr("cursor", "s-resize")
       .call(d3.drag().on("drag", h_drag));
+  image_g.call(
+    create_del_btn, params['images_link'], params["message_conform_del_image"], request_mappingimage
+  );
 }
 function request_mappingimage(link, formdata, method){
+  const token = d3.select('meta[name="csrf-token"]').attr('content');
   d3.request(link)
+  .header('X-CSRF-Token', token)
   .mimeType("application/json")
   .response(function(xhr) { return JSON.parse(xhr.responseText); })
   .send(method, formdata, function(data){
@@ -103,9 +108,6 @@ function request_mappingimage(link, formdata, method){
   images.exit().remove();
   images.enter()
   .append("g").each(set_image)
-  .call(
-    create_del_btn, params['images_link'], params["message_conform_del_image"], request_mappingimage
-  )
   });
 }
 function drawimages(){

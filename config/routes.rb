@@ -1,7 +1,7 @@
 # Plugin's routes
 # See: http://guides.rubyonrails.org/routing.html
 
-resources :mappingboards, :only => [:index,:show] do
+resources :mappingboards, :only => [:index, :show, :create, :update] do
   collection do
     get 'apply_issue'
   end
