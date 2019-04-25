@@ -63,6 +63,8 @@ function set_image(d,i){
     image_g.select(".image_width")
       .attr("x1", x)
       .attr("x2", x);
+    image_g.select(".del_btn")
+      .attr("transform", "translate(" + [x,0] + ")");
   }
   image_g
     .append("line")
@@ -91,7 +93,11 @@ function set_image(d,i){
       .attr("x2", rect.width).attr("y2", rect.height)
       .attr("stroke", "black").attr("stroke-opacity",0).attr("stroke-width",3)
       .attr("cursor", "s-resize")
-      .call(d3.drag().on("drag", h_drag));
+      .call(
+        d3.drag()
+          .on("drag", h_drag)
+          .on("end", enddrag)
+      );
   image_g.call(
     create_del_btn, params['images_link'], params["message_conform_del_image"], request_mappingimage
   );
