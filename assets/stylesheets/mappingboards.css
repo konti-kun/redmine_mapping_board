@@ -45,7 +45,7 @@
 
 .board-tab > li.active > a, .board-tab > li.active > a:hover, .board-tab > li.active > a:focus {
   color: #444;
-  cursor: default;
+  cursor: text;
   background-color: #fff;
   border: 1px solid #ddd;
   border-bottom-color: transparent;
