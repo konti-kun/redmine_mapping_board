@@ -6,8 +6,10 @@
 </div>
 <div class="mappingboard-content">
 <ul class="board-tab">
-  <li role="presentation" class="active"><a herf="" id="board1">ホワイトボード</a></li>
-  <li role="presentation" class="add-board"><a herf="" id="board2">+</a></li>
+<% @mappingboards.each do |board| %>
+  <li role="presentation" class="<%= 'active' if board.is_current %>"><% if board.is_current %><a><%= board.name %></a><% else %><%= link_to board.name, controller: 'mappingboards', :action => 'show', :id => board.id%><% end %></li>
+<% end %>
+<li role="presentation" class="add-board"><%= link_to "+",mappingboards_path(params: {project_id: @project.id}), method: :post %></li>
 </ul>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
@@ -75,6 +77,40 @@ function main(){
   svg
     .append("g")
     .attr("class", "range");
+
+  const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
+  d3.select(".board-tab > li.active")
+    .append("input")
+      .attr("id", "change-board")
+      .attr("type", "text")
+      .attr("value",d3.select(".board-tab > li.active > a").text())
+      .style("visibility", "hidden")
+      .style("position","absolute")
+      .style("margin-top", "-30px")
+      .style("margin-left", "1px")
+      .style("font-size", "120%")
+      .style("width", (board_rect.width-2) + "px")
+      .style("border", "none")
+      .on("focusout", function(){
+        const token = d3.select('meta[name="csrf-token"]').attr('content');
+        const target_name = d3.select("#change-board").node().value;
+        const formdata = new FormData();
+        formdata.append("mappingboard[name]",target_name);
+        d3.request("<%= url_for controller: 'mappingboards', action: 'update', id: @mappingboard.id %>")
+          .header('X-CSRF-Token', token)
+          .send("put", formdata, function(data){
+          d3.select(".board-tab > li.active > a").text(target_name);
+          const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
+          d3.select("#change-board").style("visibility","hidden")
+            .style("width", (board_rect.width-2) + "px");
+          });
+      });
+  d3.select(".board-tab > li.active > a")
+      .on("dblclick", function(){
+        d3.select("#change-board")
+          .style("visibility","visible")
+          .node().select();
+      });
 
   const svg_position = d3.select(".svg_panel").node().getBoundingClientRect();
 
