@@ -2,7 +2,9 @@ function set_size(selector, width, height){
   return selector.attr("width", width).attr("height", height);
 }
 function request_note(url, formdata, method="post"){
+  const token = d3.select('meta[name="csrf-token"]').attr('content');
   d3.request(url)
+  .header('X-CSRF-Token', token)
   .send(method,formdata,function(data){
     const notes = d3.select(".svg_panel").select(".notes");
     update_notes(JSON.parse(data.response),notes);

@@ -4,7 +4,11 @@
   <% end %>
   <a class="icon icon-add" id="new_image_btn" style="cursor:pointer;"><%= l(:label_new_image) %></a>
 </div>
-<h2><%= l(:label_mapping_board) %></h2>
+<div class="mappingboard-content">
+<ul class="board-tab">
+  <li role="presentation" class="active"><a herf="" id="board1">ホワイトボード</a></li>
+  <li role="presentation" class="add-board"><a herf="" id="board2">+</a></li>
+</ul>
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg>
@@ -20,8 +24,10 @@
 </filter>
 </svg>
 </div>
+</div>
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'jstoolbar' %>
+  <%= stylesheet_link_tag 'mappingboards', plugin: 'redmine_mapping_board' %>
 <% end %>
 <%= javascript_include_tag src ="https://d3js.org/d3.v5.min.js" %>
 <script src="https://d3js.org/d3-collection.v1.min.js"></script>
@@ -33,7 +39,6 @@
 <%= javascript_include_tag src ="drawimages.js", :plugin => "redmine_mapping_board" %>
 <script>
 const params = {
-  "issue_new_link" :'<%= link_to l(:label_issue_new), _new_project_issue_path(@project), :class => 'icon icon-add new-issue' %>',
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
   "get_images_link" : "<%= url_for :controller => 'mappingimages', :action => 'get_images', :mappingboard_id => @mappingboard.id %>",
   "images_link" : "<%= url_for :controller => 'mappingimages', :action => 'create', :mappingboard_id => @mappingboard.id %>",
@@ -71,11 +76,13 @@ function main(){
     .append("g")
     .attr("class", "range");
 
+  const svg_position = d3.select(".svg_panel").node().getBoundingClientRect();
+
   d3.select("#content")
     .append("div")
       .style("position","absolute")
-      .style("top", "150px")
-      .style("right", "5px")
+      .style("top", (svg_position.y + 10) + "px")
+      .style("right", "15px")
     .append("svg")
       .attr("width", 30)
       .attr("height", 30)
