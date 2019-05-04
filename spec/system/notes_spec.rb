@@ -1,7 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../rails_helper')
+require File.expand_path(File.dirname(__FILE__) + '/helpers')
 spec_type = Redmine::VERSION::MAJOR >= 4 ? :system : :feature
-
-require 'system/helpers'
 
 RSpec.configure do |c|
   c.include Helpers
@@ -54,7 +53,6 @@ RSpec.describe 'Notes', type: spec_type do
         click_button 'Apply'
         click_button 'Add'
       end
-      expect(page).to have_selector '.notes > g', count: 1
       note_node = find '.note'
       expect(note_node[:transform]).to eq 'translate(0,0)'
       expect(page).to have_selector '.notes > g a', text: '#2'

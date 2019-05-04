@@ -1,7 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../rails_helper')
+require File.expand_path(File.dirname(__FILE__) + '/helpers')
 spec_type = Redmine::VERSION::MAJOR >= 4 ? :system : :feature
-
-require 'system/helpers'
 
 RSpec.configure do |c|
   c.include Helpers
