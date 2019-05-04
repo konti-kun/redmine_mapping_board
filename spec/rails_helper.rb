@@ -1,6 +1,7 @@
 require 'database_cleaner'
 require 'selenium/webdriver'
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec/rails_helper')
+
 RSpec.configure do |config|
   config.before(:suite) do
     if Redmine::VERSION::MAJOR < 4
@@ -29,5 +30,10 @@ RSpec.configure do |config|
   FactoryBot.find_definitions
   config.before(:all) do
     FactoryBot.reload
+  end
+
+  if Redmine::VERSION::MAJOR < 4
+    config.filter_run_excluding js: true
+    config.run_all_when_everything_filtered = true
   end
 end
