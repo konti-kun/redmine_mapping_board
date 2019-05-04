@@ -5,7 +5,7 @@
 This is a redmine plugin.
 You can put(add)/move/peel off issues in the board like a sticky note.
 
-You would like to mapping issue with images.
+You would like to map issues with images.
 If you upload image files in file module of redmine, you can map images in white board.
 
 This plugin uses D3.js and SVG.
