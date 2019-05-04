@@ -1,6 +1,8 @@
 require 'database_cleaner'
 require 'selenium/webdriver'
 require File.expand_path(File.dirname(__FILE__) + '/../../../spec/rails_helper')
+spec_type = Redmine::VERSION::MAJOR >= 4 ? :system : :feature
+
 RSpec.configure do |config|
   config.before(:suite) do
     if Redmine::VERSION::MAJOR < 4
@@ -11,7 +13,7 @@ RSpec.configure do |config|
     if Redmine::VERSION::MAJOR < 4
       DatabaseCleaner.start
     end
-    if example.metadata[:type] == :system
+    if example.metadata[:type] == spec_type
       if example.metadata[:js]
         driven_by :selenium, using: :headless_chrome, screen_size: [1400, 1400]
       else
