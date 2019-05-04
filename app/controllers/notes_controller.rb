@@ -15,7 +15,6 @@ class NotesController < ApplicationController
   end
 
   def new
-    p @mappingboard.project_id
     @note = Note.new
     @issue = Issue.new
     @issue.project_id = @mappingboard.project_id
