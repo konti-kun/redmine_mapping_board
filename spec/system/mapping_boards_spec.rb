@@ -12,16 +12,16 @@ RSpec.describe 'MappingBoard', type: spec_type do
            :enumerations, :custom_fields, :custom_values, :custom_fields_trackers,
            :watchers, :journals, :journal_details, :versions
 
-
-  scenario "Administrator can set mapping board module for a project" do
+  before do
     log_user('admin', 'admin')
     set_mappingboards
+  end
+
+  scenario "Administrator can set mapping board module for a project" do
     expect(page).to have_content 'Mapping Board'
   end
 
   scenario "Show mappingboard at first time" do
-    log_user('admin', 'admin')
-    set_mappingboards
     expect(Mappingboard.exists?).to be_falsey
     click_link 'Mapping Board'
     project = Project.find(Mappingboard.first.project_id)

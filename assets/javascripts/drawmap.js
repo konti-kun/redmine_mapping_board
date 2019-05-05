@@ -2,7 +2,12 @@ function set_size(selector, width, height){
   return selector.attr("width", width).attr("height", height);
 }
 function request_note(url, formdata, method="post"){
-  const token = d3.select('meta[name="csrf-token"]').attr('content');
+  var token = "";
+  try{
+    token = d3.select('meta[name="csrf-token"]').attr('content');
+  }catch(e){
+    token = "";
+  }
   d3.request(url)
   .header('X-CSRF-Token', token)
   .send(method,formdata,function(data){
@@ -38,12 +43,7 @@ function create_note(d){
     .append("div")
       .attr("class","note_id")
     .append("div")
-      .attr("style","float:left;")
-      .text(d["number"]);
-
-  BODY_DIV.select(".note_id")
-    .append("div")
-      .style("float","right")
+      .style("float","left")
     .append("a")
       .attr("href", params['issue_link'].replace("0",d["issue_id"]))
       .text("#" + d["issue_id"]);
@@ -68,10 +68,10 @@ function create_note(d){
   }
   function notedragend(d){
     const note_formdata = new FormData();
-    note_formdata.append("number",d["number"]);
+    note_formdata.append("id",d["id"]);
     note_formdata.append("x",d["x"])
     note_formdata.append("y",d["y"]);
-    request_note(params['update_pos'],note_formdata);
+    request_note(params['notes_link'] + "/" + d["id"] + "/update_pos" ,note_formdata);
   }
   NOTE_NODE.call(
     d3.drag()
@@ -87,7 +87,7 @@ function create_note(d){
 function update_notes(data, svg){
   const NOTE = svg
     .selectAll("g.note")
-    .data(data, function(d){ return d['number']})
+    .data(data, function(d){ return d['id']})
   
   NOTE.exit().remove();
   

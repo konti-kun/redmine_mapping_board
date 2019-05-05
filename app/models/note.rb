@@ -1,5 +1,6 @@
 class Note < ActiveRecord::Base
   belongs_to :issue
+  belongs_to :mappingboard
 
   def update_position(x, y, image, rect)
     x = (x * (rect["width"].to_f/image.width)).floor + rect["x"].to_i
