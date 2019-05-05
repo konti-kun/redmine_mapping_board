@@ -21,4 +21,10 @@ FactoryBot.define do
     file { Rack::Test::UploadedFile.new(Rails.root.join(File.dirname(__FILE__) + '/../', 'fixtures/images', 'sample2.jpg'), 'image/jpg')  } 
   end
 
+  factory :issue do
+    association :project, factory: :project
+    subject{ 'new issue' }
+    author{ User.current }
+  end
+
 end

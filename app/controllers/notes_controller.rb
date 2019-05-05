@@ -24,17 +24,7 @@ class NotesController < ApplicationController
   end
 
   def create
-    query = <<-SQL
-      SELECT MIN(number + 1) AS number
-      FROM notes
-      WHERE (number + 1) NOT IN(SELECT number FROM notes)
-    SQL
-    result = ActiveRecord::Base.connection.select_all(query)
-    if result.rows[0][0].nil?
-      note = Note.new(:number => 0, :x => 0, :y => 0, :mappingboard_id => @mappingboard.id)
-    else
-      note = Note.new(:number => result.rows[0][0], :x => 0, :y => 0, :mappingboard_id => @mappingboard.id)
-    end
+    note = Note.new(:x => 0, :y => 0, :mappingboard_id => @mappingboard.id)
     issue = Issue.find_or_initialize_by(id: params[:issue_id])
     create_ok = true
     if issue.new_record?
@@ -70,7 +60,7 @@ class NotesController < ApplicationController
   end
 
   def update_pos
-    note = Note.find_by(:number => params[:number].to_i)
+    note = Note.find(params[:id].to_i)
     note.update!(x: params[:x].to_i, y: params[:y].to_i)
     notes = get_notes_json
     render json: notes
@@ -83,7 +73,7 @@ class NotesController < ApplicationController
   end
 
   def get_notes_json
-    items = Note.where(mappingboard_id: @mappingboard).eager_load(:issue).order(:number)
+    items = Note.where(mappingboard_id: @mappingboard).eager_load(:issue)
     return items.as_json(:include => {:issue => {:only => [:subject, :tracker_id]}})
   end
 end
