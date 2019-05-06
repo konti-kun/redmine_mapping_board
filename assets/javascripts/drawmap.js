@@ -19,7 +19,7 @@ function request_note(url, formdata, method="post"){
 function create_note(d){
   const NOTE_WIDTH = 110;
   const NOTE_HEIGHT= 80;
-  const DIV_STYLE = "font-size:10px;word-wrap:break-word;overflow:hidden;width:" + (NOTE_WIDTH-10) + "px;height:" + (NOTE_HEIGHT-10)+"px;";
+  const DIV_STYLE = (NOTE_WIDTH-10) + "px;height:" + (NOTE_HEIGHT-10)+"px;";
   const NOTE_NODE = d3.select(this);
 
   NOTE_NODE.append("rect").call(set_size, NOTE_WIDTH, NOTE_HEIGHT)
@@ -37,7 +37,7 @@ function create_note(d){
       .call(set_size, NOTE_WIDTH-10, NOTE_HEIGHT-10)
       .attr("x",5).attr("y",5)
     .append("xhtml:div")
-      .attr("style",DIV_STYLE)
+      .attr("class", "note_div")
 
   BODY_DIV
     .append("div")
@@ -55,6 +55,10 @@ function create_note(d){
       .style("width",(NOTE_WIDTH-10)+"px")
       .attr("title", d["issue"]["subject"])
       .text(d["issue"]["subject"]);
+
+  BODY_DIV
+    .append("div")
+    .attr("class","note_div_background");
 
    function notedrag(d){
     const x = d3.event.x;
@@ -100,5 +104,9 @@ function update_notes(data, svg){
     .transition()
     .duration(750)
     .attr("transform",function(d){return "translate(" + [d.x,d.y] + ")"})
+    .each(function(d){
+      d3.select(this).select(".note_div_background")
+      .classed("is_closed", function(d){ return d["issue"]["status"]["is_closed"]})
+    });
 }
 
