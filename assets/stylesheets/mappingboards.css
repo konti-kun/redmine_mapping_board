@@ -59,3 +59,16 @@
   border-left: 1px solid #ddd;
   border-right: 1px solid #ddd;
 }
+
+.is_closed {
+  height: 100%;
+  opacity: 0.3;
+  background-image: linear-gradient(to top left, transparent, transparent 49%, gray 47%, gray 53%, transparent 51%, transparent);
+}
+
+.note_div {
+  font-size: 10px;
+  word-wrap: break-word;
+  overflow: hidden;
+  height: 100%;
+}
