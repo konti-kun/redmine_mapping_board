@@ -70,5 +70,6 @@
   font-size: 10px;
   word-wrap: break-word;
   overflow: hidden;
+  width: 100%;
   height: 100%;
 }
