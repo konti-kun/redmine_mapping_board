@@ -7,7 +7,7 @@
 <div class="mappingboard-content">
 <ul class="board-tab">
 <% @mappingboards.each do |board| %>
-  <li role="presentation" class="<%= 'active' if board.is_current %>"><% if board.is_current %><a><%= board.name %></a><% else %><%= link_to board.name, controller: 'mappingboards', :action => 'show', :id => board.id%><% end %></li>
+  <li role="presentation" class="<%= if board.is_current then 'active' else 'unactive' end %>"><% if board.is_current %><a><%= board.name %></a><% else %><%= link_to board.name, {controller: 'mappingboards', action: 'show', id: board.id}, {style: 'display: inline-block;padding-right: 0px;'} %><% end %></li>
 <% end %>
 <li role="presentation" class="add-board"><%= link_to "+",mappingboards_path(params: {project_id: @project.id}), method: :post %></li>
 </ul>
@@ -42,7 +42,7 @@
 <script>
 const params = {
   "issue_link" :"<%= url_for :controller => 'issues', :action => 'show', :id => 0 %>",
-  "get_images_link" : "<%= url_for :controller => 'mappingimages', :action => 'get_images', :mappingboard_id => @mappingboard.id %>",
+  "get_images_link" : "<%= url_for :controller => 'mappingattachementimages', :action => 'index', :project_id=> @project.id %>",
   "images_link" : "<%= url_for :controller => 'mappingimages', :action => 'create', :mappingboard_id => @mappingboard.id %>",
   "notes_link" :"<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
@@ -77,6 +77,40 @@ function main(){
   svg
     .append("g")
     .attr("class", "range");
+
+  const board_tabs = d3.select(".board-tab").selectAll(".unactive");
+  board_tabs
+    .append("span")
+      .style("cursor","pointer")
+      .style("font-size","80%")
+      .text("(X)")
+      .style("display","none");
+  function make_delete_btn(d,i){
+    d3.select(this).select("span")
+      .style("display","inline");
+
+  }
+  function hide_delete_btn(d,i){
+    d3.select(this).select("span")
+      .style("display","none");
+  }
+  board_tabs
+    .on("mouseover", make_delete_btn)
+    .on("mouseout", hide_delete_btn)
+
+  board_tabs.select("span")
+    .on("click",function(d){
+      if(window.confirm('<%= l(:message_conform_del_board) %>')){
+        const url = d3.select(this.parentNode).select("a").attr("href")
+        const token = d3.select('meta[name="csrf-token"]').attr('content');
+        d3.request(url)
+          .header('X-CSRF-Token', token)
+          .send("delete", null, function(data){
+            location.reload();
+          });
+      }
+    });
+     
 
   const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
   d3.select(".board-tab > li.active")

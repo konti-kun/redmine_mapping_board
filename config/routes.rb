@@ -1,7 +1,7 @@
 # Plugin's routes
 # See: http://guides.rubyonrails.org/routing.html
 
-resources :mappingboards, :only => [:index, :show, :create, :update] do
+resources :mappingboards, :only => [:index, :show, :create, :update, :destroy] do
   collection do
     get 'apply_issue'
   end
@@ -10,9 +10,7 @@ resources :mappingboards, :only => [:index, :show, :create, :update] do
       post 'update_pos'
     end
   end
-  resources :mappingimages, :only => [:index, :create, :destroy, :update] do
-    collection do
-      get 'get_images', defaults: { format: :json }
-    end
-  end
+  resources :mappingimages, :only => [:index, :create, :destroy, :update]
 end
+
+resources :mappingattachementimages, :only => [:index, :show]
