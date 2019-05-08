@@ -32,7 +32,7 @@ class NotesController < ApplicationController
       issue.author ||= User.current
       issue.start_date ||= User.current.today if Setting.default_issue_start_date_to_creation_date?
     else
-      create_ok = !Note.exists?(:issue_id => params[:issue_id])
+      create_ok = !Note.exists?(:issue_id => params[:issue_id], :mappingboard_id => @mappingboard.id)
     end
     @error_message = nil
     if create_ok
@@ -74,6 +74,6 @@ class NotesController < ApplicationController
 
   def get_notes_json
     items = Note.where(mappingboard_id: @mappingboard).eager_load(:issue).joins({issue: :status})
-    return items.as_json(:include => {:issue => {:only => [:subject, :tracker_id], :include => {:status => {:only => [:is_closed]}}}})
+    items.as_json(:include => {:issue => {:only => [:subject, :tracker_id], :include => {:status => {:only => [:is_closed]}}}})
   end
 end

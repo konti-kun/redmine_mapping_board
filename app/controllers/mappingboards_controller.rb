@@ -40,7 +40,6 @@ class MappingboardsController < ApplicationController
     mappingboard = Mappingboard.find(params[:id])
     mappingboard.update(mappingboard_params)
     respond_to do |format|
-      format.html {redirect_to :index, notice: 'Product was successfully updated.' }
       format.json { head :no_content }
     end
   end
@@ -49,7 +48,6 @@ class MappingboardsController < ApplicationController
     mappingboard = Mappingboard.find(params[:id])
     mappingboard.destroy!
     respond_to do |format|
-      format.html {redirect_to :index, notice: 'Product was successfully destroyed.' }
       format.json { head :no_content }
     end
   end
