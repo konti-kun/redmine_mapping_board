@@ -26,10 +26,6 @@ class MappingimagesController < ApplicationController
     get_mappingimages_json
   end
 
-  def get_images
-    @images = Attachment.where(container_type: "Project", container_id: @mappingboard.project_id).where("content_type LIKE ?", "image/%")
-  end
-
   private
 
   def find_mappingboard

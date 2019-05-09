@@ -7,7 +7,7 @@ class MappingattachementimagesController < ApplicationController
     images = Attachment.where(container_type: "Project", container_id: @project.id).where("content_type LIKE ?", "image/%")
     urls = []
     images.find_each do |image|
-      urls.push({'url'=> url_for(action: :show, id: image.id)})
+      urls.push({'url'=> url_for(action: :show,only_path: true, id: image.id)})
     end
     render json: urls.as_json
 
