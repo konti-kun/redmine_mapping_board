@@ -19,6 +19,10 @@
   <path d="M 268 193 L 387 247 L 440 126 L 392 145 A 200 200 0 1 0 377 322 L 306 288 A 120 120 0 1 1 314 173 Z"></path>
   <circle cx=200 cy=200 r=200 fill-opacity=0></circle>
   </g>
+  <g id="imagemove_symbol">
+  <rect x=0 y=0 width=100 height=100 fill="white"></rect>
+  <path d="M 0 0 L 100 0 L 100 100 L 0 100 Z M 20 30 A 10 10 0 1 1 50 30 A 10 10 0 1 1 20 30 Z" fill-rule="evenodd"></path>
+  </g>
 </defs>
 <filter id="drop-shadow">
   <feGaussianBlur in="SourceAlpha" stdDeviation="3"></feGaussianBlur>
@@ -66,7 +70,7 @@ function main(){
       .attr("height",svg.attr("height"));
   svg
     .append("g")
-      .attr("class", "images");
+      .attr("class", "images no_target_g");
   svg
     .append("g")
       .attr("class", "notes");
@@ -148,16 +152,18 @@ function main(){
 
   const svg_position = d3.select(".svg_panel").node().getBoundingClientRect();
 
-  d3.select("#content")
+  const button_svg = d3.select("#content")
     .append("div")
       .style("position","absolute")
-      .style("top", (svg_position.y + 10) + "px")
+      .style("top", (svg_position.y + 10 + window.pageYOffset) + "px")
       .style("right", "15px")
     .append("svg")
       .attr("width", 30)
-      .attr("height", 30)
+      .attr("height", 300)
+
+  button_svg
     .append("use")
-      .attr("transform", "scale(0.06)")
+      .attr("transform", "translate(5 0) scale(0.06)")
       .attr("xlink:href","#refresh_symbol")
       .attr("cursor","pointer")
       .attr("fill", "black")
@@ -170,6 +176,29 @@ function main(){
             update_notes(datas, d3.select(".notes"));
           }
         });
+      });
+  
+  button_svg
+    .append("use")
+      .attr("id", "moveimages_btn")
+      .attr("transform", "translate(5 30) scale(0.25)")
+      .attr("xlink:href", "#imagemove_symbol")
+      .attr("cursor", "pointer")
+      .attr("title", "move image")
+      .attr("fill", "black")
+      .on("click", function(){
+	const notes = d3.select(".notes");
+	const images = d3.select(".images");
+	const btn = d3.select("#moveimages_btn");
+	if(notes.classed("no_target_g")){
+	  notes.classed("no_target_g", false);
+	  images.classed("no_target_g", true);
+	  btn.attr("fill", "black");
+	}else{
+	  notes.classed("no_target_g", true);
+	  images.classed("no_target_g", false);
+	  btn.attr("fill", "orange");
+	}
       });
 
   function zoomed(){
