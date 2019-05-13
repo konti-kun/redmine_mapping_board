@@ -15,7 +15,7 @@ class MappingboardsController < ApplicationController
       @mappingboard = Mappingboard.find_by(project_id: @project.id)
       @mappingboard.update_attribute(:is_current, true)
     end
-    @mappingboards = Mappingboard.where(project_id: @project.id)
+    @mappingboards = Mappingboard.where(project_id: @project.id).order(:id)
   end
 
   def show
@@ -39,6 +39,17 @@ class MappingboardsController < ApplicationController
   def update
     mappingboard = Mappingboard.find(params[:id])
     mappingboard.update(mappingboard_params)
+    respond_to do |format|
+      format.json { head :no_content }
+    end
+  end
+
+  def destroy
+    mappingboard = Mappingboard.find(params[:id])
+    mappingboard.destroy!
+    respond_to do |format|
+      format.json { head :no_content }
+    end
   end
 
   def apply_issue

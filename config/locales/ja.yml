@@ -9,4 +9,5 @@ ja:
   message_use_issue_yet: 既に付箋紙に使用されています。別のIDを指定してください!
   message_conform_del_note: この付箋紙を削除しますか？
   message_conform_del_image: この背景画像を削除しますか？
+  message_conform_del_board: このホワイトボードを削除しますか？
   message_conform_zero_image: 画像ファイルがありません。画像ファイルをアップロードする必要があります。

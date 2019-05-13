@@ -10,3 +10,4 @@ en:
   message_conform_del_note: Do you delete this note?
   message_conform_del_image: Do you delete this background image?
   message_conform_zero_image: Not found image file! You must upload image files.
+  message_conform_zero_image: Do you delete this mapping board?

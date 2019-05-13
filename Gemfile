@@ -1,5 +1,3 @@
-gem 'jbuilder', '~> 2.5'
-
 group :development, :test do
   gem 'webdrivers'
   gem "rspec-rails"
