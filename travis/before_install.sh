@@ -16,8 +16,8 @@ mv spec     redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/spec
 mv Gemfile  redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/Gemfile
 mv test     redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/test
 mv init.rb  redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/init.rb
-if [ ${REDMINE_VERSION} = "3.4.10" ]; then
-  rm redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/spec/requests/mappingimages_controller_spec.rb
+if [[ ${REDMINE_VERSION} =~ ^3 ]] ; then
+  rm redmine-${REDMINE_VERSION}/plugins/${PLUGIN_NAME}/spec/requests/*.rb
 fi
 
 # Create necessary files

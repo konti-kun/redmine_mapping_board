@@ -1,5 +1,5 @@
 <div class="contextual">
-  <% if User.current.allowed_to?(:add_issues, @project, :global => true) && (@project.nil? || Issue.allowed_target_trackers(@project).any?) %>
+  <% if User.current.allowed_to?(:add_issues, @project, :global => true) %>
   <%= link_to l(:label_new_note), new_mappingboard_note_path(mappingboard_id: @mappingboard.id), :remote => true, :class => "icon icon-add" %>
   <% end %>
   <a class="icon icon-add" id="new_image_btn" style="cursor:pointer;"><%= l(:label_new_image) %></a>
