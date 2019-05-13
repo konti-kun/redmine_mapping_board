@@ -20,7 +20,11 @@ class NotesController < ApplicationController
     @issue.project_id = @mappingboard.project_id
     @issue.author ||= User.current
     @issue.start_date ||= User.current.today if Setting.default_issue_start_date_to_creation_date?
-    @issue.tracker ||= @issue.allowed_target_trackers.first
+    if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3
+      @issue.tracker ||= @issue.project.trackers.first
+    else
+      @issue.tracker ||= @issue.allowed_target_trackers.first
+    end
   end
 
   def create

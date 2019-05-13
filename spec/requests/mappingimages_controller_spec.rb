@@ -17,7 +17,7 @@ describe MappingimagesController, type: :request do
     it 'create one mappingimage' do
       post '/mappingboards/0/mappingimages', params: {mappingimage: @params}
       image = Mappingimage.first
-      expect(image.url).to eq "/attachments/download/1/sample1.png"
+      expect(image.url).to eq "/mappingattachementimages/1"
       expect(image.x).to eq 0
       expect(image.y).to eq 0
       expect(image.width).to eq nil
