@@ -83,7 +83,7 @@ RSpec.describe 'Notes', type: spec_type do
     end
 
     def wait_for_load
-      expect(page).to has_selector "#ajax-indicator[style='display:none;']"
+      expect(page).to have_selector "#ajax-indicator[style='display:none;']"
     end
 
     let(:note_node){ find '.note'}
