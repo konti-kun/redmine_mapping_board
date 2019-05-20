@@ -7,7 +7,7 @@ module IssuePatch
     base.class_eval do
       unloadable
 
-      after_destroy :remove_note
+      before_destroy :remove_note
     end
 
   end
