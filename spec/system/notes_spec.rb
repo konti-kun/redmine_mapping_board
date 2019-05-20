@@ -82,6 +82,10 @@ RSpec.describe 'Notes', type: spec_type do
       translate.match(/translate\(\s*([+-]?[0-9]+[\.]?[0-9]*),\s*([+-]?[0-9]+[\.]?[0-9]*)\)/)
     end
 
+    def wait_for_load
+      expect(page).to has_selector "#ajax-indicator[style='display:none;']"
+    end
+
     let(:note_node){ find '.note'}
 
     context "Change the position of note" do
@@ -91,7 +95,7 @@ RSpec.describe 'Notes', type: spec_type do
       end
 
       subject {
-        -> {page.driver.browser.action.drag_and_drop_by(note_node.native, 100, 200).perform}
+        -> { page.driver.browser.action.drag_and_drop_by(note_node.native, 100, 200).perform }
       }
 
       scenario "And move the node of the note", js: true do
@@ -99,6 +103,8 @@ RSpec.describe 'Notes', type: spec_type do
       end
 
       scenario "And change the position data of the note model", js: true do
+        subject
+        wait_for_load
         is_expected.to change{ Note.first.x }.from(0).to(100).and change{ Note.first.y }.from(0).to(200)
       end
 

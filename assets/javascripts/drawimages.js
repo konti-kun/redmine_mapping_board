@@ -103,6 +103,7 @@ function set_image(d,i){
   );
 }
 function request_mappingimage(link, formdata, method){
+  d3.select("#ajax-indicator").style("display","block");
   const token = d3.select('meta[name="csrf-token"]').attr('content');
   d3.json(link)
   .header('X-CSRF-Token', token)
@@ -112,6 +113,7 @@ function request_mappingimage(link, formdata, method){
   images.exit().remove();
   images.enter()
   .append("g").each(set_image)
+  d3.select("#ajax-indicator").style("display","none");
   });
 }
 function drawimages(){

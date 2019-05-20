@@ -8,6 +8,7 @@ function request_note(url, formdata, method="post"){
   }catch(e){
     token = "";
   }
+  d3.select("#ajax-indicator").style("display","block");
   d3.json(url)
   .header('X-CSRF-Token', token)
   .send(method,formdata,function(data){
@@ -102,6 +103,9 @@ function update_notes(data, svg){
     .each(create_note)
     .merge(NOTE)
     .transition()
+    .on("end", function(d){ 
+      d3.select("#ajax-indicator").style("display","none");
+    })
     .duration(750)
     .attr("transform",function(d){return "translate(" + [d.x,d.y] + ")"})
     .each(function(d){
