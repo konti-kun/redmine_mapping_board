@@ -99,8 +99,6 @@ RSpec.describe 'Notes', type: spec_type do
       end
 
       scenario "And change the position data of the note model", js: true do
-        subject
-        sleep 0.1
         is_expected.to change{ Note.first.x }.from(0).to(100).and change{ Note.first.y }.from(0).to(200)
       end
 

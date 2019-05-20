@@ -8,11 +8,11 @@ function request_note(url, formdata, method="post"){
   }catch(e){
     token = "";
   }
-  d3.request(url)
+  d3.json(url)
   .header('X-CSRF-Token', token)
   .send(method,formdata,function(data){
     const notes = d3.select(".svg_panel").select(".notes");
-    update_notes(JSON.parse(data.response),notes);
+    update_notes(data,notes);
   })
 }
 

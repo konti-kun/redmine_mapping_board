@@ -7,7 +7,7 @@
 <div class="mappingboard-content">
 <ul class="board-tab">
 <% @mappingboards.each do |board| %>
-  <li role="presentation" class="<%= if board.is_current then 'active' else 'unactive' end %>"><% if board.is_current %><a><%= board.name %></a><% else %><%= link_to board.name, {controller: 'mappingboards', action: 'show', id: board.id}, {style: 'display: inline-block;padding-right: 0px;'} %><% end %></li>
+  <li role="presentation" class="<%= if board.id == @mappingboard.id then 'active' else 'unactive' end %>"><% if board.id == @mappingboard.id %><a><%= board.name %></a><% else %><%= link_to board.name, {controller: 'mappingboards', action: 'show', id: board.id}, {style: 'display: inline-block;padding-right: 0px;'} %><% end %></li>
 <% end %>
 <li role="presentation" class="add-board"><%= link_to "+",mappingboards_path(params: {project_id: @project.id}), method: :post %></li>
 </ul>

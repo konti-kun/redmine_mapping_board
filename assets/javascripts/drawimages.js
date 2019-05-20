@@ -104,10 +104,8 @@ function set_image(d,i){
 }
 function request_mappingimage(link, formdata, method){
   const token = d3.select('meta[name="csrf-token"]').attr('content');
-  d3.request(link)
+  d3.json(link)
   .header('X-CSRF-Token', token)
-  .mimeType("application/json")
-  .response(function(xhr) { return JSON.parse(xhr.responseText); })
   .send(method, formdata, function(data){
   const images = d3.select(".images")
   .selectAll(".image_g").data(data, function(d){return d.id});
