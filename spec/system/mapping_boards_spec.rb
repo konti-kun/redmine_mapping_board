@@ -17,15 +17,26 @@ RSpec.describe 'MappingBoard', type: spec_type do
     set_mappingboards
   end
 
-  scenario "Administrator can set mapping board module for a project" do
-    expect(page).to have_content 'Mapping Board'
+  describe "Initialize" do
+
+    scenario "Mappingboad is created when user first shows mappingboard" do
+      expect{
+        click_link 'Mapping Board'
+      }.to change{ Mappingboard.count }.from(0).to(1)
+    end
+
+    scenario "Mappingboad is not created when user shows mappingboard for the second time" do
+      click_link 'Mapping Board'
+      expect{
+        click_link 'Mapping Board'
+      }.not_to change{ Mappingboard.count }
+    end
+
+    scenario "Name of mappingboard is set 'default'" do
+      click_link 'Mapping Board'
+      expect(find(".board-tab")).to have_content 'default'
+    end 
   end
 
-  scenario "Show mappingboard at first time" do
-    expect(Mappingboard.exists?).to be_falsey
-    click_link 'Mapping Board'
-    project = Project.find(Mappingboard.first.project_id)
-    expect(project.name).to eq "eCookbook"
-  end
 
 end
