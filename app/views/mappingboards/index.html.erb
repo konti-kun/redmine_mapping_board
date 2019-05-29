@@ -114,7 +114,21 @@ function main(){
           });
       }
     });
-     
+
+  const update_board_name = function(){
+    const token = d3.select('meta[name="csrf-token"]').attr('content');
+    const target_name = d3.select("#change-board").node().value;
+    const formdata = new FormData();
+    formdata.append("mappingboard[name]",target_name);
+    d3.request("<%= url_for controller: 'mappingboards', action: 'update', id: @mappingboard.id %>")
+      .header('X-CSRF-Token', token)
+      .send("put", formdata, function(data){
+      d3.select(".board-tab > li.active > a").text(target_name);
+      const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
+      d3.select("#change-board").style("visibility","hidden")
+        .style("width", (board_rect.width-2) + "px");
+      });
+  }
 
   const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
   d3.select(".board-tab > li.active")
@@ -129,20 +143,12 @@ function main(){
       .style("font-size", "120%")
       .style("width", (board_rect.width-2) + "px")
       .style("border", "none")
-      .on("focusout", function(){
-        const token = d3.select('meta[name="csrf-token"]').attr('content');
-        const target_name = d3.select("#change-board").node().value;
-        const formdata = new FormData();
-        formdata.append("mappingboard[name]",target_name);
-        d3.request("<%= url_for controller: 'mappingboards', action: 'update', id: @mappingboard.id %>")
-          .header('X-CSRF-Token', token)
-          .send("put", formdata, function(data){
-          d3.select(".board-tab > li.active > a").text(target_name);
-          const board_rect = d3.select(".board-tab > li.active > a").node().getBoundingClientRect();
-          d3.select("#change-board").style("visibility","hidden")
-            .style("width", (board_rect.width-2) + "px");
-          });
-      });
+      .on("keyup",function(){
+        if (d3.event.keyCode === 13) {
+          update_board_name();
+        }
+      })
+      .on("focusout", update_board_name);
   d3.select(".board-tab > li.active > a")
       .on("dblclick", function(){
         d3.select("#change-board")

@@ -17,15 +17,17 @@ RSpec.describe 'MappingBoard', type: spec_type do
     set_mappingboards
   end
 
+  let(:project){ Project.find(Mappingboard.first.project_id) }
+
   describe "Initialize" do
 
-    scenario "Mappingboad is created when user first shows mappingboard" do
+    scenario "Mappingboard is created when user first shows mappingboard" do
       expect{
         click_link 'Mapping Board'
       }.to change{ Mappingboard.count }.from(0).to(1)
     end
 
-    scenario "Mappingboad is not created when user shows mappingboard for the second time" do
+    scenario "Mappingboard is not created when user shows mappingboard for the second time" do
       click_link 'Mapping Board'
       expect{
         click_link 'Mapping Board'
@@ -38,5 +40,49 @@ RSpec.describe 'MappingBoard', type: spec_type do
     end 
   end
 
+  describe "Change name", js: true do
+
+    let(:board){ Mappingboard.first }
+
+    scenario "It can change name of mappingboad when dbclick that name" do
+      click_link 'Mapping Board'
+      find(".board-tab > .active").double_click 
+      fill_in "change-board", with: 'new name' + '\n'
+      p find("#change-board").value
+      find("#change-board").send_keys(:return)
+      find("#change-board").send_keys(:tab)
+      page.has_no_css? '#change-board'
+      #expect(Mappingboard.first.name).to eq "new name"
+    end
+  end
+
+  describe "Add", js: true do
+
+    def add_note
+        click_link 'new note'
+        within '#new_note' do
+          fill_in 'issue_subject', with: 'new note'
+          click_button 'Add'
+        end
+    end
+
+    before do
+      click_link "Mapping Board"
+      add_note
+    end
+
+    scenario "Mappingboard have been added when click '+' in board-tab" do
+      expect{
+        find(".board-tab").click_link "+"
+      }.to change{ Mappingboard.count }.from(1).to(2)
+    end
+
+    scenario "Added mappingboard doesn't have any note" do
+      before_board = Mappingboard.first
+      find(".board-tab").click_link "+"
+      expect(Note.where.not(mappingboard_id: before_board).count).to eq 0
+    end
+
+  end
 
 end
