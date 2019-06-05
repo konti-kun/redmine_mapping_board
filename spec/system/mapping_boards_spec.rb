@@ -48,10 +48,10 @@ RSpec.describe 'MappingBoard', type: spec_type do
       click_link 'Mapping Board'
       find(".board-tab > .active").double_click 
       fill_in "change-board", with: 'new name' + '\n'
-      p find("#change-board").value
       find("#change-board").send_keys(:return)
       find("#change-board").send_keys(:tab)
       page.has_no_css? '#change-board'
+      # I don't catch focusout event so this test has not be clear
       #expect(Mappingboard.first.name).to eq "new name"
     end
   end
@@ -64,6 +64,7 @@ RSpec.describe 'MappingBoard', type: spec_type do
           fill_in 'issue_subject', with: 'new note'
           click_button 'Add'
         end
+        page.has_no_css? '.ui-widget-overlay'
     end
 
     before do
