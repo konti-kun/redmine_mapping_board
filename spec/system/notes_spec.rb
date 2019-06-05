@@ -71,6 +71,30 @@ RSpec.describe 'Notes', type: spec_type do
       expect(note_node[:transform]).to eq 'translate(0,0)'
       expect(note_node).to have_link '#' + (latest_issue_no+1).to_s
     end
+
+    scenario "Select existed issue in the notes", js: true do
+      within '#new_note' do
+        fill_in 'issue_id', with: '2'
+        click_button 'Apply'
+        click_button 'Add'
+      end
+      click_link 'new note'
+      page.accept_alert 'The issue has be used yet, please select another issue.' do
+        within '#new_note' do
+          fill_in 'issue_id', with: '2'
+          click_button 'Apply'
+          click_button 'Add'
+        end
+      end
+    end
+
+    scenario "Input of subject is blank", js: true do
+      page.accept_alert 'Subject cannot be blank' do
+        within '#new_note' do
+          click_button 'Add'
+        end
+      end
+    end
   end
 
   describe "Move note" do
