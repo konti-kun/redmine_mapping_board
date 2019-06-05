@@ -42,12 +42,9 @@ class NotesController < ApplicationController
     if create_ok
       issue.tracker_id = params[:issue][:tracker_id]
       issue.subject = params[:issue][:subject]
-      if issue.save!
-        note.issue_id = issue.id
-        note.save
-      else
-        @error_message = l(:message_save_issue_fail)
-      end
+      issue.save!
+      note.issue_id = issue.id
+      note.save
     else
       @error_message = l(:message_use_issue_yet)
     end
