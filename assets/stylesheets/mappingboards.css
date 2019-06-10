@@ -4,6 +4,18 @@
   margin-bottom: 0;
   list-style: none;
 }
+.symbol_btn:hover .symbol_back, .btn_sel .symbol_back{
+  fill: #09a094;
+  stroke: none;
+}
+.symbol_back {
+  fill: #19CCBD;
+  stroke: none;
+}
+.symbol_line {
+  fill: white;
+  stroke: none;
+}
 .board-tab::before {
   display: table;
   box-size: border-box;

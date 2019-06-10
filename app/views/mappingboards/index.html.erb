@@ -14,19 +14,32 @@
 <%= csrf_meta_tags %>
 <div class="svg_panel">
 <svg>
-<defs>
-  <g id="refresh_symbol">
-  <path d="M 268 193 L 387 247 L 440 126 L 392 145 A 200 200 0 1 0 377 322 L 306 288 A 120 120 0 1 1 314 173 Z"></path>
-  <circle cx=200 cy=200 r=200 fill-opacity=0></circle>
-  </g>
-  <g id="imagemove_symbol">
-  <rect x=0 y=0 width=100 height=100 fill="white"></rect>
-  <path d="M 0 0 L 100 0 L 100 100 L 0 100 Z M 20 30 A 10 10 0 1 1 50 30 A 10 10 0 1 1 20 30 Z" fill-rule="evenodd"></path>
-  </g>
-</defs>
 <filter id="drop-shadow">
   <feGaussianBlur in="SourceAlpha" stdDeviation="3"></feGaussianBlur>
   <feOffset in="blur" result="offsetBlur" dx="2" dy="2"/>
+</filter>
+<filter id="symbol-shadow" width="160%" height="160%">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="12" result="blur" />
+  <feFlood flood-color="#040404" in="blue" flood-opacity="0.4" result="color" />
+  <feComposite in="blur" in2="color" operator="in" result="shadow" />
+  <feOffset in="shadow" dx="12" dy="12" result="offset" />
+  <feMerge>
+    <feMergeNode in="offset" />
+    <feMergeNode in="SourceGraphic" />
+  </feMerge>
+</filter>
+<filter id="symbol-select" width="120" height="120">
+  <feGaussianBlur in="SourceAlpha" stdDeviation="20" result="blur" />
+  <feFlood flood-color="#00c3ea" in="blue" flood-opacity="0.8" result="color">
+  <animate attributeName="flood-opacity" values="0.8;0.2;0.8;" dur="3s" repeatCount="indefinite"/>
+  </feFlood>
+  <feComposite in="color" in2="blur" operator="in" result="shadow" />
+  <feOffset in="SourceGraphic" dx="12" dy="12" result="offset" />
+  <feOffset in="shadow" dx="12" dy="12" result="offset-s" />
+  <feMerge>
+    <feMergeNode in="offset-s" />
+    <feMergeNode in="offset" />
+  </feMerge>
 </filter>
 </svg>
 </div>
@@ -162,50 +175,80 @@ function main(){
     .append("div")
       .style("position","absolute")
       .style("top", (svg_position.y + 10 + window.pageYOffset) + "px")
-      .style("right", "15px")
+      .style("right", "20px")
     .append("svg")
-      .attr("width", 30)
+      .attr("width", 40)
       .attr("height", 300)
 
-  button_svg
-    .append("use")
-      .attr("transform", "translate(5 0) scale(0.06)")
-      .attr("xlink:href","#refresh_symbol")
+  const refresh_btn = button_svg
+    .append("g")
+      .attr("class", "symbol_btn")
+      .attr("transform", "translate(9 9) scale(0.15)")
       .attr("cursor","pointer")
-      .attr("fill", "black")
-      .on("click",function(){
-        $.ajax({
-          url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
-          method: "get",
-          dataType: "json",
-          success: function(datas){
-            update_notes(datas, d3.select(".notes"));
-          }
-        });
+      .attr("filter","url(#symbol-shadow)")
+
+  refresh_btn
+    .append("circle").classed("symbol_back", true)
+    .attr("r", 100).attr("cx", 70).attr("cy", 70);
+  refresh_btn
+    .append("path").classed("symbol_line", true)
+    .attr("d", "M 83 64 L 129 82 L 146 42 L 130 48 A 66 66 0 1 0 125 107 L 102 96 A 40 40 0 1 1 104 57 Z");
+
+
+  refresh_btn
+    .on("click",function(){
+      $.ajax({
+        url: "<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
+        method: "get",
+        dataType: "json",
+        success: function(datas){
+          update_notes(datas, d3.select(".notes"));
+        }
       });
+    });
   
-  button_svg
-    .append("use")
-      .attr("id", "moveimages_btn")
-      .attr("transform", "translate(5 30) scale(0.25)")
-      .attr("xlink:href", "#imagemove_symbol")
-      .attr("cursor", "pointer")
-      .attr("title", "move image")
-      .attr("fill", "black")
-      .on("click", function(){
-	const notes = d3.select(".notes");
-	const images = d3.select(".images");
-	const btn = d3.select("#moveimages_btn");
-	if(notes.classed("no_target_g")){
-	  notes.classed("no_target_g", false);
-	  images.classed("no_target_g", true);
-	  btn.attr("fill", "black");
-	}else{
-	  notes.classed("no_target_g", true);
-	  images.classed("no_target_g", false);
-	  btn.attr("fill", "orange");
-	}
-      });
+  const moveimages_btn = button_svg
+    .append("g");
+
+  moveimages_btn
+    .append("circle").classed("symbol_back", true)
+    .attr("r", 100).attr("cx", 100).attr("cy", 100);
+  moveimages_btn
+    .append("rect").classed("symbol_line", true)
+    .attr("x", 35).attr("y", 35).attr("width", 130).attr("height", 130);
+  moveimages_btn
+    .append("rect").classed("symbol_back", true)
+    .attr("x", 43).attr("y", 43).attr("width", 114).attr("height", 114);
+  moveimages_btn
+    .append("path").classed("symbol_line", true)
+    .attr("d", "M 82 90 L 121 145 L 48 145 Z");
+  moveimages_btn
+    .append("circle").classed("symbol_line", true)
+    .attr("r", 15).attr("cx", 130).attr("cy", 70);
+
+  moveimages_btn
+    .attr("id", "moveimages_btn")
+    .attr("class", "symbol_btn")
+    .attr("transform", "translate(5 45) scale(0.15)")
+    .attr("filter","url(#symbol-shadow)")
+    .attr("cursor", "pointer")
+    .attr("title", "move image")
+    .on("click", function(){
+      const notes = d3.select(".notes");
+      const images = d3.select(".images");
+      const btn = d3.select("#moveimages_btn");
+      if(notes.classed("no_target_g")){
+        notes.classed("no_target_g", false);
+        images.classed("no_target_g", true);
+        btn.attr("filter", "url(#symbol-shadow)");
+        btn.classed("btn_sel", false);
+      }else{
+        notes.classed("no_target_g", true);
+        images.classed("no_target_g", false);
+        btn.attr("filter", "url(#symbol-select)");
+        btn.classed("btn_sel", true);
+      }
+    });
 
   function zoomed(){
     d3.select(".notes")
