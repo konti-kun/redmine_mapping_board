@@ -2,6 +2,7 @@
 ja:
   permission_view_mappingboards: ホワイトボード表示
   label_mapping_board: ホワイトボード
+  label_mapping_issues: 付箋されたチケット
   label_new_note: 新しい付箋紙 
   label_new_image: 新しい背景画像 
   label_select_issue: チケットの選択

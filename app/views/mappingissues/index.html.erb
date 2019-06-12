@@ -1,0 +1,41 @@
+<div class="contextual">
+</div>
+<div class="mappingissues-content">
+  <h3><%= l(:label_mapping_issues) %></h3>
+  <%= form_tag({controller: :mappingissues, action: :index}, :method => :get, :id => 'query_form') do %>
+    <fieldset id="filters"><legend><%= l(:label_filter_plural) %></legend>
+      <%= javascript_tag do %>
+var operatorLabels = <%= raw_json Query.operators_labels %>;
+var operatorByType = <%= raw_json Query.operators_by_filter_type %>;
+var availableFilters = <%= raw_json @query.available_filters_as_json %>;
+var labelDayPlural = <%= raw_json l(:label_day_plural) %>;
+
+var filtersUrl = <%= raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type) %>;
+
+$(document).ready(function(){
+  initFilters();
+  addFilter("tracker_id", "=", []);
+});
+<% end %>
+
+<table id="filters-table">
+</table>
+<%= hidden_field_tag 'f[]', '' %>
+    </fieldset>
+    <p class="buttons">
+    <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
+    </p>
+  <% end %>
+  <% if @query.valid? %>
+  <% if @issues.empty? %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+  <% else %>
+  <%= render_query_totals(@query) %>
+  <%= render :partial => 'list', :locals => {:issues => @issues, :query => @query} %>
+  <span class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></span>
+  <% end %>
+  <% end %>
+</div>
+<% content_for :sidebar do %>
+    <%= render :partial => 'issues/sidebar' %>
+<% end %>
