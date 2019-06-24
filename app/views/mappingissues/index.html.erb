@@ -3,35 +3,59 @@
 <div class="mappingissues-content">
   <h3><%= l(:label_mapping_issues) %></h3>
   <%= form_tag({controller: :mappingissues, action: :index}, :method => :get, :id => 'query_form') do %>
-    <fieldset id="filters"><legend><%= l(:label_filter_plural) %></legend>
-      <%= javascript_tag do %>
-var operatorLabels = <%= raw_json Query.operators_labels %>;
-var operatorByType = <%= raw_json Query.operators_by_filter_type %>;
-var availableFilters = <%= raw_json @query.available_filters_as_json %>;
-var labelDayPlural = <%= raw_json l(:label_day_plural) %>;
+    <%= hidden_field_tag 'set_filter', '1' %>
+    <%= hidden_field_tag 'type', @query.type, :disabled => true, :id => 'query_type' %>
+    <%= query_hidden_sort_tag(@query) %>
 
-var filtersUrl = <%= raw_json queries_filter_path(:project_id => @query.project.try(:id), :type => @query.type) %>;
+    <div id="query_form_with_buttons" class="hide-when-print">
+      <div id="query_form_content">
+        <fieldset id="filters" class="collapsible <%= @query.new_record? ? "" : "collapsed" %>">
+          <legend onclick="toggleFieldset(this);" class="icon icon-<%= @query.new_record? ? "expended" : "collapsed" %>"><%= l(:label_filter_plural) %></legend>
+          <div style="<%= @query.new_record? ? "" : "display: none;" %>">
+            <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+          </div>
+        </fieldset>
+      </div>
+      <p class="buttons">
+        <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
+      </p>
+    </div>
 
-$(document).ready(function(){
-  initFilters();
-  addFilter("tracker_id", "=", []);
-});
-<% end %>
-
-<table id="filters-table">
-</table>
-<%= hidden_field_tag 'f[]', '' %>
-    </fieldset>
-    <p class="buttons">
-    <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
-    </p>
+    <%= error_messages_for @query %>
   <% end %>
   <% if @query.valid? %>
   <% if @issues.empty? %>
   <p class="nodata"><%= l(:label_no_data) %></p>
   <% else %>
-  <%= render_query_totals(@query) %>
-  <%= render :partial => 'list', :locals => {:issues => @issues, :query => @query} %>
+    <%= form_tag('', id: "mappingissues_form") do |form|%>
+      <a class="icon icon-add" id="new_notes_btn" style="cursor:pointer;" href="javascript:$('#mappingissues_form').submit()"><%= l(:label_new_note) %></a>
+    <div class="autoscroll">
+    <table class="list issues odd-even <%= @query.css_classes %>">
+      <thead>
+        <tr>
+          <% @columns.each do |column| %>
+            <%= column_header(@query, column) %>
+          <% end %>
+          <% @mapping_boards.each do |column| %>
+            <th class="board-<%= column.id %>"><%= column.name %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+      <% @issues.each do |issue| -%>
+      <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= issue.css_classes %> ">
+        <% @columns.each do |column| %>
+          <%= content_tag('td', column_content(column, issue), :class => column.css_classes) %>
+        <% end %>
+        <% @mapping_boards.each do |column| %>
+          <%= mapping_issue_flg(column.id, issue)%>
+        <% end %>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+    </div>
+    <% end -%>
   <span class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></span>
   <% end %>
   <% end %>

@@ -1,3 +1,5 @@
+require 'query.rb'
+
 class MappingissuesController < ApplicationController
   unloadable
 
@@ -7,11 +9,21 @@ class MappingissuesController < ApplicationController
   helper :issues
   include QueriesHelper
 
-  def index
-    use_session = !request.format.csv?
-    retrieve_query(IssueQuery, use_session)
+  def create
+    p params
+    find_project
+    redirect_to action: "index", project_id: @project.id
+  end
 
-    p params[:f]
+  def index
+    @columns = [
+      QueryColumn.new(:id, :sortable => "#{Issue.table_name}.id", :default_order => 'desc', :caption => '#', :frozen => true),
+      QueryColumn.new(:tracker, :sortable => "#{Tracker.table_name}.position", :groupable => true),
+      QueryColumn.new(:status, :sortable => "#{IssueStatus.table_name}.position", :groupable => true),
+      QueryColumn.new(:subject, :sortable => "#{Issue.table_name}.subject"),
+    ]
+    @mapping_boards = Mappingboard.where(project_id: @project.id).order(:id)
+    retrieve_query(IssueQuery, true)
 
     if @query.valid?
       respond_to do |format|
