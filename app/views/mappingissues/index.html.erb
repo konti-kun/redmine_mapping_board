@@ -5,7 +5,6 @@
   <%= form_tag({controller: :mappingissues, action: :index}, :method => :get, :id => 'query_form') do %>
     <%= hidden_field_tag 'set_filter', '1' %>
     <%= hidden_field_tag 'type', @query.type, :disabled => true, :id => 'query_type' %>
-    <%= query_hidden_sort_tag(@query) %>
 
     <div id="query_form_with_buttons" class="hide-when-print">
       <div id="query_form_content">
@@ -30,11 +29,15 @@
     <%= form_tag('', id: "mappingissues_form") do |form|%>
       <a class="icon icon-add" id="new_notes_btn" style="cursor:pointer;" href="javascript:$('#mappingissues_form').submit()"><%= l(:label_new_note) %></a>
     <div class="autoscroll">
-    <table class="list issues odd-even <%= @query.css_classes %>">
+    <table class="list issues odd-even">
       <thead>
         <tr>
           <% @columns.each do |column| %>
-            <%= column_header(@query, column) %>
+            <% if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3 %> 
+              <%= content_tag('th', h(column.caption)) %>
+            <% else %>
+              <%= column_header(@query, column) %>
+            <% end %>
           <% end %>
           <% @mapping_boards.each do |column| %>
             <th class="board-<%= column.id %>"><%= column.name %></th>
@@ -43,9 +46,9 @@
       </thead>
       <tbody>
       <% @issues.each do |issue| -%>
-      <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %> <%= issue.css_classes %> ">
+      <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
         <% @columns.each do |column| %>
-          <%= content_tag('td', column_content(column, issue), :class => column.css_classes) %>
+          <%= content_tag('td', column_content(column, issue)) %>
         <% end %>
         <% @mapping_boards.each do |column| %>
           <%= mapping_issue_flg(column.id, issue)%>

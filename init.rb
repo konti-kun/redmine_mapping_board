@@ -14,6 +14,6 @@ Redmine::Plugin.register :redmine_mapping_board do
   project_module :mappingboards do
     permission :view_mappingboards, {:mappingboards => :index, :mappingissues => :index}
   end
-  menu :project_menu, :mappingboards, { :controller => 'mappingboards', :action => 'index' }, :caption => :label_mapping_board, :after => :issues, :param => :project_id
+  menu :project_menu, :mappingboards, { :controller => 'mappingboards', :action => 'index' }, :caption => :label_mapping_board, :before => :issues, :param => :project_id
   menu :project_menu, :mappingissues, { :controller => 'mappingissues', :action => 'index' }, :caption => :label_mapping_issues, :after => :mappingboards, :param => :project_id
 end

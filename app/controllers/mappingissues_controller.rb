@@ -29,7 +29,11 @@ class MappingissuesController < ApplicationController
       QueryColumn.new(:subject, :sortable => "#{Issue.table_name}.subject"),
     ]
     @mapping_boards = Mappingboard.where(project_id: @project.id).order(:id)
-    retrieve_query(IssueQuery, true)
+    if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3
+      retrieve_query
+    else
+      retrieve_query(IssueQuery, true)
+    end
 
     if @query.valid?
       respond_to do |format|
