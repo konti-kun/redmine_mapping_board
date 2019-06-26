@@ -10,7 +10,13 @@ class MappingissuesController < ApplicationController
   include QueriesHelper
 
   def create
-    p params
+    dx = 0
+    Mappingboard.find(params["ids"].keys).each do |board|
+      Issue.find(params["ids"][board.id.to_s]).each do | issue |
+        note = Note.create(x: dx, y: 0, issue_id: issue.id, mappingboard_id: board.id)
+        dx += 20
+      end
+    end
     find_project
     redirect_to action: "index", project_id: @project.id
   end
