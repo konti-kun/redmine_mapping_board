@@ -15,20 +15,35 @@ RSpec.describe 'MappingIssue', type: spec_type do
   before do
     log_user('admin', 'admin')
     set_mappingboards
+    click_link 'Mapping Issues'
   end
 
   let(:project){ Project.find(Mappingboard.first.project_id) }
 
-  describe "Initialize" do
+  describe "Initialize contents" do
+
     scenario "Show mapping issues title" do
-      click_link 'Mapping Issues'
+      # tab name and content's title
       expect(page).to have_content 'Mapping Issues', count:2
     end
-    scenario "Show mapping issues title" do
-      click_link 'Mapping Issues'
+
+    scenario "Show mapping issues filter" do
       expect(page).to have_content 'Filter'
+      expect(page).to_not have_content 'Options'
+    end
+  end
+
+  describe "Initialize mapping issues table" do
+    scenario "show fixed table columns" do
+      expect(find("thead")).to have_content('#') &
+        have_content('Tracker') & have_content('Status') & have_content('Subject') 
     end
 
+    scenario "show mappingboad's names" do
+      create :mappingboard, project: Project.first, name: "BOARD1"
+      click_link 'Mapping Issues'
+      expect(find("thead")).to have_content('BOARD1')
+    end
   end
 
 end
