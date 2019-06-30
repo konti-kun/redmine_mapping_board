@@ -2,7 +2,7 @@ Redmine::Plugin.register :redmine_mapping_board do
   name 'Mapping board plugin'
   author 'konti-kun'
   description 'This is a plugin for Redmine'
-  version '0.4.2'
+  version '0.5.0'
   url 'https://github.com/konti-kun'
   author_url 'https://github.com/konti-kun'
 
