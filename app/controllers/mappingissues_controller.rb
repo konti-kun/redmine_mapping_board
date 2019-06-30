@@ -10,14 +10,21 @@ class MappingissuesController < ApplicationController
   include QueriesHelper
 
   def create
-    dx = 0
+    reg_count = 0
     Mappingboard.find(params["ids"].keys).each do |board|
+      dx = 0
       Issue.find(params["ids"][board.id.to_s]).each do | issue |
-        note = Note.create(x: dx, y: 0, issue_id: issue.id, mappingboard_id: board.id)
+        begin
+          note = Note.create(x: dx, y: 0, issue_id: issue.id, mappingboard_id: board.id)
+        rescue ActiveRecord::RecordNotUnique => e
+          next
+        end
         dx += 20
+        reg_count += 1
       end
     end
     find_project
+    flash[:success] = l :message_success_bulk_create_notes, reg_count
     redirect_to action: "index", project_id: @project.id
   end
 

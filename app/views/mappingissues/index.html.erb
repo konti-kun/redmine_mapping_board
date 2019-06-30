@@ -27,7 +27,7 @@
   <p class="nodata"><%= l(:label_no_data) %></p>
   <% else %>
     <%= form_tag('', id: "mappingissues_form") do |form|%>
-      <a class="icon icon-add" id="new_notes_btn" style="cursor:pointer;" href="javascript:$('#mappingissues_form').submit()"><%= l(:label_new_note) %></a>
+      <a class="icon icon-add" id="new_notes_btn" style="cursor:pointer;" href="javascript:$('#mappingissues_form').submit()"><%= l(:label_bulk_create_notes) %></a>
     <div class="autoscroll">
     <table class="list issues odd-even">
       <thead>

@@ -4,6 +4,7 @@ ja:
   label_mapping_board: ホワイトボード
   label_mapping_issues: 付箋されたチケット
   label_new_note: 新しい付箋紙 
+  label_bulk_create_notes: 一括付箋紙作成
   label_new_image: 新しい背景画像 
   label_select_issue: チケットの選択
   message_not_issue_id: チケットのIDが間違っています。正しいIDを指定してください!
@@ -12,3 +13,4 @@ ja:
   message_conform_del_image: この背景画像を削除しますか？
   message_conform_del_board: このホワイトボードを削除しますか？
   message_conform_zero_image: 画像ファイルがありません。画像ファイルをアップロードする必要があります。
+  message_success_bulk_create_notes: "%{count}件の付箋紙を貼り付けました。"
