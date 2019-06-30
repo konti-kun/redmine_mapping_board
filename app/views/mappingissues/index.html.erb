@@ -1,0 +1,68 @@
+<div class="contextual">
+</div>
+<div class="mappingissues-content">
+  <h3><%= l(:label_mapping_issues) %></h3>
+  <%= form_tag({controller: :mappingissues, action: :index}, :method => :get, :id => 'query_form') do %>
+    <%= hidden_field_tag 'set_filter', '1' %>
+    <%= hidden_field_tag 'type', @query.type, :disabled => true, :id => 'query_type' %>
+
+    <div id="query_form_with_buttons" class="hide-when-print">
+      <div id="query_form_content">
+        <fieldset id="filters" class="collapsible <%= @query.new_record? ? "" : "collapsed" %>">
+          <legend onclick="toggleFieldset(this);" class="icon icon-<%= @query.new_record? ? "expended" : "collapsed" %>"><%= l(:label_filter_plural) %></legend>
+          <div style="<%= @query.new_record? ? "" : "display: none;" %>">
+            <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+          </div>
+        </fieldset>
+      </div>
+      <p class="buttons">
+        <%= link_to_function l(:button_apply), '$("#query_form").submit()', :class => 'icon icon-checked' %>
+      </p>
+    </div>
+
+    <%= error_messages_for @query %>
+  <% end %>
+  <% if @query.valid? %>
+  <% if @issues.empty? %>
+  <p class="nodata"><%= l(:label_no_data) %></p>
+  <% else %>
+    <%= form_tag('', id: "mappingissues_form") do |form|%>
+      <a class="icon icon-add" id="new_notes_btn" style="cursor:pointer;" href="javascript:$('#mappingissues_form').submit()"><%= l(:label_bulk_create_notes) %></a>
+    <div class="autoscroll">
+    <table class="list issues odd-even">
+      <thead>
+        <tr>
+          <% @columns.each do |column| %>
+            <% if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3 %> 
+              <%= content_tag('th', h(column.caption)) %>
+            <% else %>
+              <%= column_header(@query, column) %>
+            <% end %>
+          <% end %>
+          <% @mapping_boards.each do |column| %>
+            <th class="board-<%= column.id %>"><%= column.name %></th>
+          <% end %>
+        </tr>
+      </thead>
+      <tbody>
+      <% @issues.each do |issue| -%>
+      <tr id="issue-<%= issue.id %>" class="hascontextmenu <%= cycle('odd', 'even') %>">
+        <% @columns.each do |column| %>
+          <%= content_tag('td', column_content(column, issue)) %>
+        <% end %>
+        <% @mapping_boards.each do |column| %>
+          <%= mapping_issue_flg(column.id, issue)%>
+        <% end %>
+      </tr>
+      <% end %>
+      </tbody>
+    </table>
+    </div>
+    <% end -%>
+  <span class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></span>
+  <% end %>
+  <% end %>
+</div>
+<% content_for :sidebar do %>
+    <%= render :partial => 'issues/sidebar' %>
+<% end %>

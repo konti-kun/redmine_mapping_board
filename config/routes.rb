@@ -14,3 +14,5 @@ resources :mappingboards, :only => [:index, :show, :create, :update, :destroy] d
 end
 
 resources :mappingattachementimages, :only => [:index, :show]
+get 'projects/:project_id/mappingissues', to: "mappingissues#index"
+post 'projects/:project_id/mappingissues', to: "mappingissues#create"

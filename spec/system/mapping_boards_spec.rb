@@ -48,10 +48,11 @@ RSpec.describe 'MappingBoard', type: spec_type do
       click_link 'Mapping Board'
       find(".board-tab > .active").double_click 
       fill_in "change-board", with: 'new name' + '\n'
-      find("#change-board").send_keys(:return)
       find("#change-board").send_keys(:tab)
       page.has_no_css? '#change-board'
       # I don't catch focusout event so this test has not be clear
+      #page.execute_script "$('#change-board').trigger('focusout');"
+      #click_link 'Mapping Board'
       #expect(Mappingboard.first.name).to eq "new name"
     end
   end
