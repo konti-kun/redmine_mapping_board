@@ -1,7 +1,7 @@
 class NotesController < ApplicationController
   unloadable
 
-  before_action :find_mappingboard, :only => [:index, :new, :create, :destroy, :update_pos]
+  before_action :find_mappingboard, :only => [:index, :new, :create, :destroy, :update_pos, :lines]
 
   helper :issues
 
@@ -67,6 +67,12 @@ class NotesController < ApplicationController
     render json: notes
   end
 
+  def lines
+    sql = 'select issue_from_id,issue_to_id from issue_relations ir inner join notes on ir.issue_from_id = notes.id where notes.mappingboard_id = :id'
+    lines = ActiveRecord::Base.connection.select_all(sql, nil, {id: @mappingboard.id}.to_a)
+    render json: lines
+  end
+
   private
 
   def find_mappingboard
@@ -74,7 +80,7 @@ class NotesController < ApplicationController
   end
 
   def get_notes_json
-    items = Note.where(mappingboard_id: @mappingboard).eager_load(:issue).joins({issue: :status})
+    items =Note.where(mappingboard_id: @mappingboard).eager_load(:issue).joins({issue: :status})
     items.as_json(:include => {:issue => {:only => [:subject, :tracker_id], :include => {:status => {:only => [:is_closed]}}}})
   end
 end

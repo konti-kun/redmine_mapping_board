@@ -8,6 +8,7 @@ resources :mappingboards, :only => [:index, :show, :create, :update, :destroy] d
   resources :notes, :only => [:index, :new, :create, :destroy] do 
     member do
       post 'update_pos'
+      get 'lines'
     end
   end
   resources :mappingimages, :only => [:index, :create, :destroy, :update]
