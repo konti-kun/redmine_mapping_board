@@ -68,9 +68,8 @@ class NotesController < ApplicationController
   end
 
   def lines
-    sql = 'select issue_from_id,issue_to_id from issue_relations ir inner join notes on ir.issue_from_id = notes.id where notes.mappingboard_id = :id'
-    lines = ActiveRecord::Base.connection.select_all(sql, nil, {id: @mappingboard.id}.to_a)
-    render json: lines
+    issue_relations  = IssueRelation.joins("inner join notes on notes.issue_id = issue_relations.issue_from_id").where(notes: {mappingboard_id: @mappingboard.id})
+    render json: issue_relations
   end
 
   private

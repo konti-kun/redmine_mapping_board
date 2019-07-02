@@ -14,6 +14,7 @@ function request_note(url, formdata, method="post"){
   .send(method,formdata,function(data){
     const notes = d3.select(".svg_panel").select(".notes");
     update_notes(data,notes);
+    update_lines(params['lines_link']);
   })
 }
 
@@ -99,6 +100,7 @@ function update_notes(data, svg){
   NOTE
     .enter().append("g")
       .attr("class", "note")
+      .attr("id", function(d){ return "issue_" + d['issue_id']})
       .attr("transform",function(d){return "translate(0,0)"})
     .each(create_note)
     .merge(NOTE)
@@ -114,3 +116,41 @@ function update_notes(data, svg){
     });
 }
 
+function update_lines(url){
+  const token = d3.select('meta[name="csrf-token"]').attr('content');
+
+  d3.json(url)
+  .header('X-CSRF-Token', token)
+  .get(function(data){
+    const NOTE_WIDTH = 110;
+    const NOTE_HEIGHT= 80;
+    const line_values = [];
+    data.forEach(line => {
+      from_value = d3.select("#issue_" + line.issue_from_id).data()
+      to_value = d3.select("#issue_" + line.issue_to_id).data()
+      if(from_value.length != 0 && to_value.length != 0){
+        line_values.push([from_value[0], to_value[0]]);
+      }
+    });
+    const lines = d3.select(".lines")
+    .selectAll("path")
+    .data(line_values, function(d){return d.id});
+
+    var line = d3.line()
+    .x(function(d) { return d.x + NOTE_WIDTH/2; })
+    .y(function(d) { return d.y + NOTE_HEIGHT/2; })
+
+    lines.exit().remove();
+    enter_lines = lines.enter()
+    .append("path")
+    .attr("stroke", "black")
+    .attr("stroke-width", 3)
+    .attr("stroke-opacity", 0.2)
+    .merge(lines)
+    .transition()
+    .duration(750)
+    .attr("d", line);
+
+  });
+
+}

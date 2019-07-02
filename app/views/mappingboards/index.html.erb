@@ -63,6 +63,7 @@ const params = {
   "images_link" : "<%= url_for :controller => 'mappingimages', :action => 'create', :mappingboard_id => @mappingboard.id %>",
   "notes_link" :"<%= url_for :controller => 'notes', :action => 'index', :mappingboard_id => @mappingboard.id %>",
   "update_pos" :"<%= url_for :controller => 'notes', :action => 'update_pos', :mappingboard_id => @mappingboard.id, :id => 0 %>",
+  "lines_link" :"<%= url_for :controller => 'notes', :action => 'lines', :mappingboard_id => @mappingboard.id %>",
   "message_conform_del_note" :"<%= l(:message_conform_del_note) %>",
   "message_conform_del_image" :"<%= l(:message_conform_del_image) %>",
   "message_conform_zero_image":"<%= l(:message_conform_zero_image) %>"
@@ -84,6 +85,9 @@ function main(){
   svg
     .append("g")
       .attr("class", "images no_target_g");
+  svg
+    .append("g")
+      .attr("class", "lines");
   svg
     .append("g")
       .attr("class", "notes");
@@ -203,6 +207,7 @@ function main(){
         dataType: "json",
         success: function(datas){
           update_notes(datas, d3.select(".notes"));
+          update_lines(params['lines_link']);
         }
       });
     });
@@ -253,6 +258,8 @@ function main(){
   function zoomed(){
     d3.select(".notes")
       .attr("transform", d3.event.transform);
+    d3.select(".lines")
+      .attr("transform", d3.event.transform);
     d3.select(".images")
       .attr("transform", d3.event.transform);
   }
@@ -277,6 +284,7 @@ function main(){
     }
   });
   request_mappingimage(params['images_link'],null,"get");
+  update_lines(params['lines_link']);
 }
 main();
 </script>
