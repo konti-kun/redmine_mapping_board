@@ -6,7 +6,7 @@ module MappingissuesHelper
       tag = "<td><span style='margin-left:15px;' class='icon icon-checked'></span>"
     else
       tag = "<td class='checkbox hide-when-print'>"
-      tag += check_box_tag("ids[#{mappingboard_id}][]", issue.id, false, :id => nil)
+      tag += check_box_tag("ids[#{mappingboard_id}][]", issue.id, false, :id => "issue_#{mappingboard_id}_#{issue.id}")
     end
     tag += "</td>"
     tag.html_safe
