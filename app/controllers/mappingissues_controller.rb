@@ -11,20 +11,20 @@ class MappingissuesController < ApplicationController
 
   def create
     reg_count = 0
+    find_project
     Mappingboard.find(params["ids"].keys).each do |board|
       dx = 0
       Issue.find(params["ids"][board.id.to_s]).each do | issue |
-        begin
-          note = Note.create(x: dx, y: 0, issue_id: issue.id, mappingboard_id: board.id)
-        rescue ActiveRecord::RecordNotUnique => e
-          next
+        note = Note.create(x: dx, y: 0, issue_id: issue.id, mappingboard_id: board.id)
+        if !note.valid?
+          flash[:error] = note.errors.full_messages[0]
+          return redirect_to action: "index", project_id: @project.id
         end
         dx += 20
         reg_count += 1
       end
     end
-    find_project
-    flash[:success] = l :message_success_bulk_create_notes, reg_count
+    flash[:notice] = l :message_success_bulk_create_notes, reg_count
     redirect_to action: "index", project_id: @project.id
   end
 
