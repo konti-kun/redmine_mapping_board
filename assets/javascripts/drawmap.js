@@ -93,26 +93,24 @@ function create_note(d){
 function update_notes(data, svg){
   const NOTE = svg
     .selectAll("g.note")
-    .data(data, function(d){ return d['id']})
+    .data(data, d => d['id'])
   
   NOTE.exit().remove();
   
   NOTE
     .enter().append("g")
       .attr("class", "note")
-      .attr("id", function(d){ return "issue_" + d['issue_id']})
-      .attr("transform",function(d){return "translate(0,0)"})
+      .attr("id", d => "issue_" + d['issue_id'])
+      .attr("transform",d => "translate(0,0)")
     .each(create_note)
     .merge(NOTE)
     .transition()
-    .on("end", function(d){ 
-      d3.select("#ajax-indicator").style("display","none");
-    })
+    .on("end", d => {d3.select("#ajax-indicator").style("display","none"); })
     .duration(750)
-    .attr("transform",function(d){return "translate(" + [d.x,d.y] + ")"})
+    .attr("transform",d => "translate(" + [d.x,d.y] + ")")
     .each(function(d){
       d3.select(this).select(".note_div_background")
-      .classed("is_closed", function(d){ return d["issue"]["status"]["is_closed"]})
+      .classed("is_closed", d => d["issue"]["status"]["is_closed"])
     });
 }
 
@@ -121,7 +119,7 @@ function update_lines(url){
 
   d3.json(url)
   .header('X-CSRF-Token', token)
-  .get(function(data){
+  .get(data => {
     const NOTE_WIDTH = 110;
     const NOTE_HEIGHT= 80;
     const line_values = [];
@@ -134,11 +132,11 @@ function update_lines(url){
     });
     const lines = d3.select(".lines")
     .selectAll("path")
-    .data(line_values, function(d){return d.id});
+    .data(line_values);
 
     var line = d3.line()
-    .x(function(d) { return d.x + NOTE_WIDTH/2; })
-    .y(function(d) { return d.y + NOTE_HEIGHT/2; })
+    .x(d => d.x + NOTE_WIDTH/2)
+    .y(d => d.y + NOTE_HEIGHT/2)
 
     lines.exit().remove();
     enter_lines = lines.enter()
