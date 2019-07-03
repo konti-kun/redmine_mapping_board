@@ -281,10 +281,10 @@ function main(){
     dataType: "json",
     success: function(datas){
       update_notes(datas, d3.select(".notes"));
+      update_lines(params['lines_link']);
     }
   });
   request_mappingimage(params['images_link'],null,"get");
-  update_lines(params['lines_link']);
 }
 main();
 </script>
