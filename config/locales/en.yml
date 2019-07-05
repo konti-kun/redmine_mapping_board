@@ -10,6 +10,7 @@ en:
   message_not_issue_id: Issue id error, please set current id!
   message_use_issue_yet: The issue has be used yet, please select another issue.
   message_conform_del_note: Do you delete this note?
+  message_conform_del_board: Do you delete this board?
   message_conform_del_image: Do you delete this background image?
   message_conform_zero_image: Not found image file! You must upload image files.
   message_conform_zero_image: Do you delete this mapping board?

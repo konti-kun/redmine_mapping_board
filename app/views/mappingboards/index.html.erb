@@ -99,13 +99,23 @@ function main(){
     .append("g")
     .attr("class", "range");
 
+  const DEL_ICON = "M 10 9 m -3 -3 l 6 6 m 0 -6 l -6 6"
   const board_tabs = d3.select(".board-tab").selectAll(".unactive");
-  board_tabs
+  const board_del_btn = board_tabs
     .append("span")
       .style("cursor","pointer")
-      .style("font-size","80%")
-      .text("(X)")
-      .style("display","none");
+      .style("display","none")
+      .style("vertical-align", "-7px")
+      .append("svg").attr("width",20).attr("height",20)
+  board_del_btn
+      .append("circle")
+      .attr("r",7).attr("cx", 10).attr("cy", 9)
+      .attr("fill","white").attr("stroke","black")
+  board_del_btn
+    .append("path")
+      .attr("d", DEL_ICON)
+      .attr("fill","none").attr("stroke","black")
+      .attr("cursor","pointer");
   function make_delete_btn(d,i){
     d3.select(this).select("span")
       .style("display","inline");
@@ -160,7 +170,7 @@ function main(){
       .style("font-size", "120%")
       .style("width", (board_rect.width-2) + "px")
       .style("border", "none")
-      .on("keyup",function(){
+      .on("keyup",() => {
         if (d3.event.keyCode === 13) {
           update_board_name();
         }
