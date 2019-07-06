@@ -79,7 +79,7 @@ class NotesController < ApplicationController
   end
 
   def get_notes_json
-    items =Note.where(mappingboard_id: @mappingboard).eager_load(:issue).joins({issue: :status})
+    items =Note.issue_of_notes(@mappingboard)
     items.as_json(:include => {:issue => {:only => [:subject, :tracker_id], :include => {:status => {:only => [:is_closed]}}}})
   end
 end
