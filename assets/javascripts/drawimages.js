@@ -3,7 +3,9 @@ function getTranslation(sel) {
   return [matrix.e, matrix.f];
 }
 function set_image(d,i){
-  const svg = d3.select("svg");
+  const svg = d3.select(".selector");
+  const WINDOW_WIDTH = document.body.clientWidth;
+  const WINDOW_HEIGHT = document.body.clientHeight;
       
   const image_g = d3.select(this)
     .attr("class", "image_g")
@@ -20,8 +22,8 @@ function set_image(d,i){
     const formdata = new FormData();
     formdata.append("mappingimage[x]", d.x);
     formdata.append("mappingimage[y]", d.y);
-    formdata.append("mappingimage[width]", image.attr("width"));
-    formdata.append("mappingimage[height]", image.attr("height"));
+    formdata.append("mappingimage[width]", WINDOW_WIDTH);
+    formdata.append("mappingimage[height]", WINDOW_HEIGHT);
     update_url = params['images_link'] + "/" + d["id"];
     request_mappingimage(update_url,formdata,"put");
   }
@@ -41,11 +43,11 @@ function set_image(d,i){
       .on("end", enddrag)
     );
 
-  if(rect.width > svg.attr("width") -10 ){
-      rect.width = svg.attr("width") -10;
+  if(rect.width > WINDOW_WIDTH -10 ){
+      rect.width = WINDOW_WIDTH -10;
   }
-  if(rect.height > svg.attr("height") -10 ){
-      rect.height = svg.attr("height") -10;
+  if(rect.height > WINDOW_HEIGHT -10 ){
+      rect.height = WINDOW_HEIGHT -10;
   }
 
   if(d["width"]){
@@ -117,26 +119,21 @@ function request_mappingimage(link, formdata, method){
   });
 }
 function drawimages(){
-  const svg = d3.select("svg");
+  const svg = d3.select(".selector");
   d3.json(params["get_images_link"],function(data){
     if(data.length == 0){
       alert(params["message_conform_zero_image"]);
       return
     }
-    const WIDTH = svg.attr("width");
-    const HEIGHT = svg.attr("height");
+    const WIDTH = document.body.clientWidth;
+    const HEIGHT = document.body.clientHeight;
     const PADDING = 50;
     const W_DIFF = (WIDTH - PADDING) / data.length;
 
     d3.select(".selector")
-      .append("rect")
-        .attr("x",0).attr("y",0)
-        .attr("width", WIDTH).attr("height", HEIGHT)
-        .attr("fill", "black")
-        .attr("opacity", 0.6)
         .on("click", function(d){
-          d3.select(".selector").select("rect").remove();
           d3.select(".selector").selectAll("image").remove();
+          d3.select(".selector").style("display", "none");
         });
     d3.select(".selector").selectAll("image").data(data).enter()
       .append("image")
@@ -149,8 +146,8 @@ function drawimages(){
         .on("click", function(d){
           d.x = 0;
           d.y = 0;
-          d3.select(".selector").select("rect").remove();
           d3.select(".selector").selectAll("image").remove();
+          d3.select(".selector").style("display", "none");
 	        const formdata = new FormData();
 	        formdata.append("mappingimage[url]",d['url']);
           request_mappingimage(params['images_link'],formdata,"post");
