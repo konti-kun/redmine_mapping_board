@@ -8,4 +8,8 @@ class Note < ActiveRecord::Base
     y = (y * (rect["height"].to_f/image.height)).floor + rect["y"].to_i
     self.attributes = { x: x, y: y}
   end
+
+  scope :issue_of_notes, ->(mappingboard){
+    where(mappingboard_id: mappingboard).eager_load(:issue).joins({issue: :status})
+  }
 end
