@@ -91,14 +91,16 @@ function main(){
   svg
     .append("g")
       .attr("class", "notes");
-  const selector = svg
-    .append("g")
-      .attr("class", "selector");
-
-  svg
-    .append("g")
-    .attr("class", "range");
-
+  d3.select("body")
+    .append("svg")
+      .attr("class", "selector")
+      .style("position", "fixed").style("left", 0).style("top", 0)
+      .style("display", "none")
+      .attr("width",10000)
+      .attr("height",10000)
+    .append("rect").attr("opacity", 0.5)
+      .attr("fill", "black")
+      .attr("x", 0).attr("y", 0).attr("width", 10000).attr("height", 10000)
   const DEL_ICON = "M 10 9 m -3 -3 l 6 6 m 0 -6 l -6 6"
   const board_tabs = d3.select(".board-tab").selectAll(".unactive");
   const board_del_btn = board_tabs
@@ -281,7 +283,8 @@ function main(){
 
   d3.select("#new_image_btn")
   .on("click", function(d){
-    drawimages(selector);
+    d3.select(".selector").style("display", "block")
+    drawimages();
   });
 
 
