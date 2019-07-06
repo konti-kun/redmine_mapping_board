@@ -12,4 +12,8 @@ class Note < ActiveRecord::Base
   scope :issue_of_notes, ->(mappingboard){
     where(mappingboard_id: mappingboard).eager_load(:issue).joins({issue: :status})
   }
+
+  def self.new_with_issue(mappingboard)
+    self.new(issue: Issue.new(project: mappingboard.project))
+  end
 end

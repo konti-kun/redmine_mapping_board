@@ -15,16 +15,7 @@ class NotesController < ApplicationController
   end
 
   def new
-    @note = Note.new
-    @issue = Issue.new
-    @issue.project_id = @mappingboard.project_id
-    @issue.author ||= User.current
-    @issue.start_date ||= User.current.today if Setting.default_issue_start_date_to_creation_date?
-    if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3
-      @issue.tracker ||= @issue.project.trackers.first
-    else
-      @issue.tracker ||= @issue.allowed_target_trackers.first
-    end
+    @note = Note.new_with_issue(@mappingboard)
   end
 
   def create
