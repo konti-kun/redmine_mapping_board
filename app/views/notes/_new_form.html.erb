@@ -5,11 +5,11 @@
 </p>
 </fieldset>
 <fieldset class="box">
-<%= labelled_fields_for :issue, @issue do |f| %>
+<%= labelled_fields_for :issue, @note.issue do |f| %>
 <% if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3 %>
-  <p><%= f.select :tracker_id, @issue.project.trackers.collect {|t| [t.name, t.id]}, {:required => true},:onchange => "updateIssueFrom('#{escape_javascript update_issue_form_path(@project, @issue)}', this)" %></p>
+  <p><%= f.select :tracker_id, @project.trackers.collect {|t| [t.name, t.id]}, {:required => true},:onchange => "updateIssueFrom('#{escape_javascript update_issue_form_path(@project, @note.issue)}', this)" %></p>
 <% else %>
-  <p><%= f.select :tracker_id, trackers_options_for_select(@issue), {:required => true} %></p>
+  <p><%= f.select :tracker_id, trackers_options_for_select(@note.issue), {:required => true} %></p>
 <% end %>
   <p><%= f.text_field :subject, :size => 40, :maxlength => 40 %></p>
 <% end %>
