@@ -67,6 +67,7 @@ RSpec.describe 'Notes', type: spec_type do
       within '#new_note' do
         fill_in 'issue_subject', with: 'new note'
         click_button 'Add'
+        sleep 0.2
       end
       expect(note_node[:transform]).to eq 'translate(0,0)'
       expect(note_node).to have_link '#' + (latest_issue_no+1).to_s

@@ -6,12 +6,8 @@ class NotesController < ApplicationController
   helper :issues
 
   def index
-    @items = get_notes_json
-
-    respond_to do |format|
-      format.html
-      format.json { render :json => @items }
-    end
+    notes = get_notes_json
+    render json: notes
   end
 
   def new
@@ -19,29 +15,19 @@ class NotesController < ApplicationController
   end
 
   def create
-    note = Note.new(:x => 0, :y => 0, :mappingboard_id => @mappingboard.id)
-    issue = Issue.find_or_initialize_by(id: params[:issue_id])
-    create_ok = true
-    if issue.new_record?
-      issue.project_id = @mappingboard.project_id
-      issue.author ||= User.current
-      issue.start_date ||= User.current.today if Setting.default_issue_start_date_to_creation_date?
-    else
-      create_ok = !Note.exists?(:issue_id => params[:issue_id], :mappingboard_id => @mappingboard.id)
-    end
-    @error_message = nil
-    if create_ok
+    Note.transaction do
+      note = Note.new_with_issue(@mappingboard, params[:issue_id])
+      issue = note.issue
       issue.tracker_id = params[:issue][:tracker_id]
       issue.subject = params[:issue][:subject]
       issue.save!
-      note.issue_id = issue.id
-      note.save
-    else
-      @error_message = l(:message_use_issue_yet)
+      note.save!
     end
     @items = get_notes_json
   rescue ActiveRecord::RecordInvalid => e
     @error_message = e.record.errors.full_messages[0]
+  rescue ActiveRecord::RecordNotFound
+    @error_message = l(:message_not_issue_id)
   end
 
   def destroy

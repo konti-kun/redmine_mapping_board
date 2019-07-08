@@ -13,7 +13,19 @@ class Note < ActiveRecord::Base
     where(mappingboard_id: mappingboard).eager_load(:issue).joins({issue: :status})
   }
 
-  def self.new_with_issue(mappingboard)
-    self.new(issue: Issue.new(project: mappingboard.project))
+  def self.new_with_issue(mappingboard, issue_id=nil)
+    if issue_id.blank?
+      issue = Issue.new(project: mappingboard.project)
+      issue.author = User.current
+      issue.start_date = User.current.today if Setting.default_issue_start_date_to_creation_date?
+      if Redmine::VERSION::MAJOR < 4 && Redmine::VERSION::MINOR < 3
+        issue.tracker = issue.project.trackers.first
+      else
+        issue.tracker = issue.allowed_target_trackers.first
+      end
+    else
+      issue = Issue.find(issue_id)
+    end
+    self.new(x: 0, y: 0, mappingboard:  mappingboard, issue: issue)
   end
 end
