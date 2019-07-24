@@ -132,7 +132,7 @@ function update_lines(url){
     });
     const lines = d3.select(".lines")
     .selectAll("path")
-    .data(line_values);
+    .data(line_values, d => { return d[0].id +"_" + d[1].id});
 
     var line = d3.line()
     .x(d => d.x + NOTE_WIDTH/2)
