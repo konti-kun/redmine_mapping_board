@@ -22,8 +22,8 @@ function set_image(d,i){
     const formdata = new FormData();
     formdata.append("mappingimage[x]", d.x);
     formdata.append("mappingimage[y]", d.y);
-    formdata.append("mappingimage[width]", WINDOW_WIDTH);
-    formdata.append("mappingimage[height]", WINDOW_HEIGHT);
+    formdata.append("mappingimage[width]", image.attr("width"));
+    formdata.append("mappingimage[height]", image.attr("height"));
     update_url = params['images_link'] + "/" + d["id"];
     request_mappingimage(update_url,formdata,"put");
   }
