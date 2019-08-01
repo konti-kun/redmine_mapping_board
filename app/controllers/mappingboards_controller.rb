@@ -9,6 +9,7 @@ class MappingboardsController < ApplicationController
   def index
     @mappingboard = Mappingboard.get_current(@project)
     @mappingboards = Mappingboard.where(project_id: @project.id).order(:id)
+    @zoom = session["zoom_#{@mappingboard.id}"]
   end
 
   def show
@@ -49,9 +50,14 @@ class MappingboardsController < ApplicationController
     end
   end
 
-  def show_issue
-    issue = Issue.find(params[:issue_id])
-    render json: issue
+  def set_zoom
+    mappingboard = Mappingboard.find(params[:id])
+    session["zoom_#{mappingboard.id}"] = {
+      k: params[:zoom_k],
+      x: params[:zoom_x],
+      y: params[:zoom_y]
+    }
+    p session["zoom_#{mappingboard.id}"]
   end
 
   private

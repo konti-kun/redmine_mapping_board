@@ -4,6 +4,7 @@
 resources :mappingboards, :only => [:index, :show, :create, :update, :destroy] do
   collection do
     get 'apply_issue'
+    put 'set_zoom'
   end
   resources :notes, :only => [:index, :new, :create, :destroy] do 
     member do
