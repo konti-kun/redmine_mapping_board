@@ -57,7 +57,6 @@ class MappingboardsController < ApplicationController
       x: params[:zoom_x],
       y: params[:zoom_y]
     }
-    p session["zoom_#{mappingboard.id}"]
   end
 
   private
