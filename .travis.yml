@@ -1,7 +1,6 @@
 env:
   matrix:
-    - REDMINE_VERSION="4.0.2"
-    - REDMINE_VERSION="3.4.10"
+    - REDMINE_VERSION="4.0.4"
 languauge: ruby
 rvm:
   - 2.5.3
